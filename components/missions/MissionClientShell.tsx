@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { MISSION_MODALS, MISSION_INSTRUCTIONS } from '@/data/missions';
 import { MissionSlug } from '@/types/game';
+import { playMechKeyPress, playMechKeyRelease } from '@/utils/soundEffects';
 import MissionModal from '@/components/ui/MissionModal';
 import InstructionModal from '@/components/ui/InstructionModal';
 import MobileDPad from '@/components/ui/MobileDPad';
@@ -38,8 +39,13 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
     setCompletionModalOpen(false);
   }, []);
 
+  // Global Mechanical Keyboard Typing Sound + Pause/Help Keybind
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      if (e.isTrusted && !e.repeat) {
+        playMechKeyPress(e.key === ' ' || e.key === 'Enter');
+      }
+
       if (completionModalOpen) return;
       if (e.key === 'p' || e.key === 'P' || e.key === 'Escape' || e.key === 'h' || e.key === 'H') {
         e.preventDefault();
@@ -51,8 +57,18 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
       }
     };
 
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.isTrusted) {
+        playMechKeyRelease();
+      }
+    };
+
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+    };
   }, [completionModalOpen, hasStarted, handleStartOrResume]);
 
   if (!missionData || !instructionData) {
@@ -98,35 +114,35 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
       <div className="w-full max-w-[640px]">
         {slug === 'huygens' && (
           <HuygensGame
+            key={resetSignal}
             isPaused={isPaused}
-            resetSignal={resetSignal}
             onComplete={() => setCompletionModalOpen(true)}
           />
         )}
         {slug === 'lunokhod' && (
           <LunokhodGame
+            key={resetSignal}
             isPaused={isPaused}
-            resetSignal={resetSignal}
             onComplete={() => setCompletionModalOpen(true)}
           />
         )}
         {slug === 'galileo' && (
           <GalileoGame
+            key={resetSignal}
             isPaused={isPaused}
-            resetSignal={resetSignal}
             onComplete={() => setCompletionModalOpen(true)}
           />
         )}
         {slug === 'ingenuity' && (
           <IngenuityGame
+            key={resetSignal}
             isPaused={isPaused}
-            resetSignal={resetSignal}
             onComplete={() => setCompletionModalOpen(true)}
           />
         )}
       </div>
 
-      {/* Universal Mobile D-Pad & Action Button (Hidden on Desktop) */}
+      {/* Universal Mobile D-Pad & Action Button */}
       <MobileDPad slug={slug} disabled={isPaused} />
 
       {/* Pre-Game Briefing & Pause Modal */}

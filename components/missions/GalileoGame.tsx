@@ -1,10 +1,15 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  playTelemetryDataTick,
+  playLightningZap,
+  playMissionCompleteFanfare,
+  playThrusterBurst,
+} from '@/utils/soundEffects';
 
 interface GalileoGameProps {
   isPaused: boolean;
-  resetSignal: number;
   onComplete: () => void;
 }
 
@@ -18,7 +23,31 @@ interface StormCell {
 const CANVAS_W = 640;
 const CANVAS_H = 480;
 
-export default function GalileoGame({ isPaused, resetSignal, onComplete }: GalileoGameProps) {
+function createInitialSimState() {
+  const storms: StormCell[] = Array.from({ length: 6 }, (_, i) => ({
+    x: 80 + ((i * 97) % (CANVAS_W - 160)),
+    y: 280 + i * 75,
+    vx: (i % 2 === 0 ? 1 : -1) * (1.3 + (i % 3) * 0.35),
+    radius: 22,
+  }));
+
+  return {
+    probeX: CANVAS_W / 2,
+    probeY: 210,
+    vx: 0,
+    beamX: CANVAS_W / 2,
+    beamTargetX: CANVAS_W / 2 + 120,
+    beamWidth: 110,
+    telemetry: 0,
+    stunTimer: 0,
+    storms,
+    keys: { left: false, right: false },
+    pointerX: null as number | null,
+    tick: 0,
+  };
+}
+
+export default function GalileoGame({ isPaused, onComplete }: GalileoGameProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const completedRef = useRef(false);
 
@@ -26,53 +55,7 @@ export default function GalileoGame({ isPaused, resetSignal, onComplete }: Galil
   const [inBeam, setInBeam] = useState(true);
   const [completed, setCompleted] = useState(false);
 
-  const simRef = useRef({
-    probeX: CANVAS_W / 2,
-    probeY: 210,
-    vx: 0,
-    beamX: CANVAS_W / 2,
-    beamTargetX: CANVAS_W / 2,
-    beamWidth: 110,
-    telemetry: 0,
-    stunTimer: 0,
-    storms: [] as StormCell[],
-    keys: { left: false, right: false },
-    pointerX: null as number | null,
-    tick: 0,
-  });
-
-  const resetGame = useCallback(() => {
-    completedRef.current = false;
-    setTelemetry(0);
-    setInBeam(true);
-    setCompleted(false);
-
-    const storms: StormCell[] = Array.from({ length: 6 }, (_, i) => ({
-      x: 80 + Math.random() * (CANVAS_W - 160),
-      y: 280 + i * 75,
-      vx: (i % 2 === 0 ? 1 : -1) * (1.2 + Math.random() * 1.1),
-      radius: 22,
-    }));
-
-    simRef.current = {
-      probeX: CANVAS_W / 2,
-      probeY: 210,
-      vx: 0,
-      beamX: CANVAS_W / 2,
-      beamTargetX: CANVAS_W / 2,
-      beamWidth: 110,
-      telemetry: 0,
-      stunTimer: 0,
-      storms,
-      keys: { left: false, right: false },
-      pointerX: null,
-      tick: 0,
-    };
-  }, []);
-
-  useEffect(() => {
-    resetGame();
-  }, [resetGame, resetSignal]);
+  const simRef = useRef(createInitialSimState());
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -121,6 +104,9 @@ export default function GalileoGame({ isPaused, resetSignal, onComplete }: Galil
         } else {
           if (s.keys.left) s.vx -= 0.55;
           if (s.keys.right) s.vx += 0.55;
+          if ((s.keys.left || s.keys.right) && s.tick % 7 === 0) {
+            playThrusterBurst();
+          }
 
           if (s.pointerX !== null) {
             const diff = s.pointerX - s.probeX;
@@ -142,6 +128,7 @@ export default function GalileoGame({ isPaused, resetSignal, onComplete }: Galil
           }
 
           if (s.stunTimer === 0 && Math.hypot(s.probeX - st.x, s.probeY - st.y) < st.radius + 16) {
+            playLightningZap();
             s.vx = s.probeX < st.x ? -6.5 : 6.5;
             s.stunTimer = 25;
           }
@@ -152,6 +139,9 @@ export default function GalileoGame({ isPaused, resetSignal, onComplete }: Galil
 
         if (lockedOn) {
           s.telemetry = Math.min(100, s.telemetry + 0.16);
+          if (s.tick % 12 === 0) {
+            playTelemetryDataTick(s.telemetry);
+          }
         }
 
         if (s.tick % 4 === 0) {
@@ -161,6 +151,7 @@ export default function GalileoGame({ isPaused, resetSignal, onComplete }: Galil
 
         if (s.telemetry >= 100 && !completedRef.current) {
           completedRef.current = true;
+          playMissionCompleteFanfare();
           setTelemetry(100);
           setCompleted(true);
           setTimeout(() => onComplete(), 900);

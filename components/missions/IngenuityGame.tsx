@@ -1,10 +1,15 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import {
+  playRotorPulse,
+  playWaypointScanChime,
+  playRockBump,
+  playMissionCompleteFanfare,
+} from '@/utils/soundEffects';
 
 interface IngenuityGameProps {
   isPaused: boolean;
-  resetSignal: number;
   onComplete: () => void;
 }
 
@@ -31,7 +36,26 @@ const SPIRES: RockSpire[] = [
   { x: 455, width: 34, height: 105 },
 ];
 
-export default function IngenuityGame({ isPaused, resetSignal, onComplete }: IngenuityGameProps) {
+function createInitialSimState() {
+  return {
+    x: 75,
+    y: GROUND_Y - 14,
+    vx: 0,
+    vy: 0,
+    rotorAngle: 0,
+    waypoints: [
+      { id: 1, x: 185, y: 210, scanned: false },
+      { id: 2, x: 325, y: 155, scanned: false },
+      { id: 3, x: 455, y: 225, scanned: false },
+    ] as Waypoint[],
+    keys: { up: false, left: false, right: false },
+    pointerThrust: false,
+    tick: 0,
+    lastBumpTick: -20,
+  };
+}
+
+export default function IngenuityGame({ isPaused, onComplete }: IngenuityGameProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const completedRef = useRef(false);
 
@@ -39,44 +63,15 @@ export default function IngenuityGame({ isPaused, resetSignal, onComplete }: Ing
   const [statusText, setStatusText] = useState('SCAN 3 WAYPOINTS THEN LAND');
   const [completed, setCompleted] = useState(false);
 
-  const simRef = useRef({
-    x: 75,
-    y: GROUND_Y - 14,
-    vx: 0,
-    vy: 0,
-    rotorAngle: 0,
-    waypoints: [] as Waypoint[],
-    keys: { up: false, left: false, right: false },
-    pointerThrust: false,
-    tick: 0,
-  });
+  const simRef = useRef(createInitialSimState());
 
   const resetGame = useCallback(() => {
     completedRef.current = false;
+    simRef.current = createInitialSimState();
     setScannedCount(0);
     setStatusText('SCAN 3 WAYPOINTS THEN LAND');
     setCompleted(false);
-
-    simRef.current = {
-      x: 75,
-      y: GROUND_Y - 14,
-      vx: 0,
-      vy: 0,
-      rotorAngle: 0,
-      waypoints: [
-        { id: 1, x: 185, y: 210, scanned: false },
-        { id: 2, x: 325, y: 155, scanned: false },
-        { id: 3, x: 455, y: 225, scanned: false },
-      ],
-      keys: { up: false, left: false, right: false },
-      pointerThrust: false,
-      tick: 0,
-    };
   }, []);
-
-  useEffect(() => {
-    resetGame();
-  }, [resetGame, resetSignal]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -130,6 +125,10 @@ export default function IngenuityGame({ isPaused, resetSignal, onComplete }: Ing
       if (!isPaused && !completedRef.current) {
         s.tick++;
 
+        if (thrusting && s.tick % 5 === 0) {
+          playRotorPulse();
+        }
+
         const marsGravity = 0.14;
         const rotorLift = thrusting ? -0.31 : 0;
         s.vy += marsGravity + rotorLift;
@@ -155,6 +154,10 @@ export default function IngenuityGame({ isPaused, resetSignal, onComplete }: Ing
           const halfW = spire.width / 2 + 12;
           const topY = GROUND_Y - spire.height - 12;
           if (Math.abs(s.x - spire.x) < halfW && s.y > topY) {
+            if (s.tick - s.lastBumpTick > 14) {
+              playRockBump();
+              s.lastBumpTick = s.tick;
+            }
             if (s.y - s.vy <= topY) {
               s.y = topY;
               s.vy = -1.5;
@@ -174,6 +177,7 @@ export default function IngenuityGame({ isPaused, resetSignal, onComplete }: Ing
 
           if (onTargetPad && allScanned && !completedRef.current) {
             completedRef.current = true;
+            playMissionCompleteFanfare();
             setCompleted(true);
             setStatusText('TOUCHDOWN CONFIRMED!');
             setTimeout(() => onComplete(), 900);
@@ -192,6 +196,7 @@ export default function IngenuityGame({ isPaused, resetSignal, onComplete }: Ing
 
         if (updated) {
           const count = s.waypoints.filter((w) => w.scanned).length;
+          playWaypointScanChime(count);
           setScannedCount(count);
           if (count === 3) {
             setStatusText('ALL SCANS COMPLETE — LAND ON TARGET PAD!');
@@ -382,14 +387,13 @@ export default function IngenuityGame({ isPaused, resetSignal, onComplete }: Ing
         )}
       </div>
 
-      <div className="mt-3 flex w-full max-w-[640px] items-center justify-between gap-2">
+      {/* Desktop-only button bar */}
+      <div className="mt-3 hidden w-full max-w-[640px] items-center justify-between gap-2 md:flex">
         <div className="flex gap-2">
           <button
             onMouseDown={() => (simRef.current.keys.left = true)}
             onMouseUp={() => (simRef.current.keys.left = false)}
             onMouseLeave={() => (simRef.current.keys.left = false)}
-            onTouchStart={() => (simRef.current.keys.left = true)}
-            onTouchEnd={() => (simRef.current.keys.left = false)}
             className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 font-mono text-xs font-bold text-white active:bg-slate-700"
           >
             ◀ LEFT
@@ -398,8 +402,6 @@ export default function IngenuityGame({ isPaused, resetSignal, onComplete }: Ing
             onMouseDown={() => (simRef.current.keys.right = true)}
             onMouseUp={() => (simRef.current.keys.right = false)}
             onMouseLeave={() => (simRef.current.keys.right = false)}
-            onTouchStart={() => (simRef.current.keys.right = true)}
-            onTouchEnd={() => (simRef.current.keys.right = false)}
             className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 font-mono text-xs font-bold text-white active:bg-slate-700"
           >
             RIGHT ▶
@@ -410,8 +412,6 @@ export default function IngenuityGame({ isPaused, resetSignal, onComplete }: Ing
           onMouseDown={() => (simRef.current.pointerThrust = true)}
           onMouseUp={() => (simRef.current.pointerThrust = false)}
           onMouseLeave={() => (simRef.current.pointerThrust = false)}
-          onTouchStart={() => (simRef.current.pointerThrust = true)}
-          onTouchEnd={() => (simRef.current.pointerThrust = false)}
           className="rounded-lg bg-amber-500 px-5 py-2 font-mono text-xs font-bold text-slate-950 active:bg-amber-400"
         >
           HOLD ROTOR LIFT [SPACE / ↑]

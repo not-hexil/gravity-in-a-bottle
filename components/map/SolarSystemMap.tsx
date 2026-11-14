@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { MissionSlug } from '@/types/game';
 import { playRandomSpaceBeep, playMissionLockSound } from '@/utils/soundEffects';
 
@@ -127,20 +127,24 @@ interface HitTarget {
 
 export default function SolarSystemMap() {
   const router = useRouter();
+  const pathname = usePathname();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const hitTargetsRef = useRef<HitTarget[]>([]);
   const hoveredIdRef = useRef<string | null>(null);
   const launchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [hoveredTarget, setHoveredTarget] = useState<HitTarget | null>(null);
   const [statusBanner, setStatusBanner] = useState<string | null>(null);
-  const [launchingMission, setLaunchingMission] = useState<string | null>(null);
+  const [launchState, setLaunchState] = useState<{ label: string; fromPath: string } | null>(null);
 
-  // Clear launch overlay whenever returning to the Solar System (Router Cache / bfcache)
+  // Derived overlay state: automatically clears when pathname changes or returns
+  const launchingMission =
+    launchState && launchState.fromPath === pathname ? launchState.label : null;
+
+  // Subscribe to browser bfcache restore (pageshow) and clean up pending timeout
   useEffect(() => {
-    setLaunchingMission(null);
-
-    const handlePageShow = () => setLaunchingMission(null);
+    const handlePageShow = () => setLaunchState(null);
     window.addEventListener('pageshow', handlePageShow);
 
     return () => {
@@ -151,12 +155,22 @@ export default function SolarSystemMap() {
     };
   }, []);
 
+  // Auto-center the scrollable orrery on the Sun & inner planets on mobile screens
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container && container.scrollWidth > container.clientWidth) {
+      container.scrollLeft = (container.scrollWidth - container.clientWidth) / 2;
+    }
+  }, []);
+
   const launchMission = (slug: MissionSlug, label: string) => {
     if (launchingMission) return;
     playMissionLockSound();
-    setLaunchingMission(label);
+    setLaunchState({ label, fromPath: pathname });
     launchTimeoutRef.current = setTimeout(() => {
       router.push(`/missions/${slug}`);
+      // Clear state right after triggering navigation so Router Cache / Activity never restores it stuck
+      setLaunchState(null);
     }, 350);
   };
 
@@ -383,7 +397,7 @@ export default function SolarSystemMap() {
     const hit = getHitAtPointer(e);
     if (!hit) {
       playRandomSpaceBeep();
-      setStatusBanner('DEEP SPACE VOID — CLICK A PLANET TO SCAN');
+      setStatusBanner('DEEP SPACE VOID — TAP A PLANET TO SCAN');
       return;
     }
 
@@ -396,28 +410,39 @@ export default function SolarSystemMap() {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Main Orrery Viewport */}
-      <div className="relative overflow-hidden rounded-xl border-4 border-slate-700 bg-slate-950 shadow-2xl">
-        <canvas
-          ref={canvasRef}
-          width={CANVAS_W}
-          height={CANVAS_H}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={() => {
-            hoveredIdRef.current = null;
-            setHoveredTarget(null);
-          }}
-          onClick={handleCanvasClick}
-          className={`block max-w-full ${hoveredTarget ? 'cursor-pointer' : 'cursor-crosshair'}`}
-        />
+    <div className="flex w-full flex-col items-center">
+      {/* Mobile Scroll Hint */}
+      <p className="mb-2 font-mono text-[11px] text-slate-400 md:hidden">
+        ← Swipe horizontally to pan across the Solar System →
+      </p>
+
+      {/* Scrollable Orrery Container on Mobile, Centered Frame on Desktop */}
+      <div className="relative w-full max-w-[960px] overflow-hidden rounded-xl border-4 border-slate-700 bg-slate-950 shadow-2xl">
+        <div
+          ref={scrollContainerRef}
+          className="w-full overflow-x-auto overscroll-x-contain"
+        >
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_W}
+            height={CANVAS_H}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={() => {
+              hoveredIdRef.current = null;
+              setHoveredTarget(null);
+            }}
+            onClick={handleCanvasClick}
+            className={`block shrink-0 ${hoveredTarget ? 'cursor-pointer' : 'cursor-crosshair'}`}
+            style={{ width: `${CANVAS_W}px`, height: `${CANVAS_H}px` }}
+          />
+        </div>
 
         {/* Hover Telemetry Tooltip */}
         {hoveredTarget && !launchingMission && (
-          <div className="pointer-events-none absolute top-4 left-4 rounded-lg border border-slate-700 bg-slate-900/90 px-3.5 py-2 font-mono text-xs shadow-lg">
+          <div className="pointer-events-none absolute top-3 left-3 rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-1.5 font-mono text-xs shadow-lg">
             <p className="font-bold text-white">{hoveredTarget.name.toUpperCase()}</p>
             {hoveredTarget.missionLabel ? (
-              <p className="text-amber-400">▶ CLICK TO LAUNCH: {hoveredTarget.missionLabel}</p>
+              <p className="text-amber-400">▶ TAP TO LAUNCH: {hoveredTarget.missionLabel}</p>
             ) : (
               <p className="text-slate-400">SIGNAL: PASSIVE BEACON ONLY</p>
             )}
@@ -426,15 +451,15 @@ export default function SolarSystemMap() {
 
         {/* Non-Mission Beep Feedback Banner */}
         {statusBanner && !launchingMission && (
-          <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-slate-700 bg-slate-900/90 px-4 py-1.5 font-mono text-xs text-slate-300 shadow">
+          <div className="pointer-events-none absolute bottom-3 left-1/2 w-[90%] max-w-md -translate-x-1/2 rounded-full border border-slate-700 bg-slate-900/90 px-4 py-1.5 text-center font-mono text-[11px] text-slate-300 shadow sm:text-xs">
             {statusBanner}
           </div>
         )}
 
         {/* Mission Launch Transition Overlay */}
         {launchingMission && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/90">
-            <p className="animate-pulse font-mono text-lg font-bold tracking-widest text-amber-400">
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/90 p-4 text-center">
+            <p className="animate-pulse font-mono text-base font-bold tracking-widest text-amber-400 sm:text-lg">
               LOCKING TRAJECTORY: {launchingMission}...
             </p>
           </div>
@@ -444,31 +469,31 @@ export default function SolarSystemMap() {
       {/* Mission Target Quick-Launch Bar */}
       <div className="mt-4 flex w-full max-w-[960px] flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/90 px-4 py-3 text-xs">
         <span className="font-mono text-slate-400">
-          <strong className="text-amber-400">ACTIVE MISSIONS:</strong> Click glowing worlds or
+          <strong className="text-amber-400">ACTIVE MISSIONS:</strong> Tap glowing worlds or
           select below
         </span>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <button
             onClick={() => launchMission('lunokhod', 'LUNOKHOD 1 ROVER')}
-            className="rounded border border-sky-500/40 bg-slate-800 px-3 py-1 font-mono text-xs font-bold text-sky-300 transition hover:bg-sky-500 hover:text-slate-950"
+            className="rounded border border-sky-500/40 bg-slate-800 px-3 py-2 font-mono text-xs font-bold text-sky-300 transition hover:bg-sky-500 hover:text-slate-950 sm:py-1"
           >
             🌕 MOON (LUNOKHOD 1)
           </button>
           <button
             onClick={() => launchMission('ingenuity', 'INGENUITY HELICOPTER')}
-            className="rounded border border-orange-500/40 bg-slate-800 px-3 py-1 font-mono text-xs font-bold text-orange-300 transition hover:bg-orange-500 hover:text-slate-950"
+            className="rounded border border-orange-500/40 bg-slate-800 px-3 py-2 font-mono text-xs font-bold text-orange-300 transition hover:bg-orange-500 hover:text-slate-950 sm:py-1"
           >
             🔴 MARS (INGENUITY)
           </button>
           <button
             onClick={() => launchMission('galileo', 'GALILEO PROBE')}
-            className="rounded border border-amber-500/40 bg-slate-800 px-3 py-1 font-mono text-xs font-bold text-amber-300 transition hover:bg-amber-500 hover:text-slate-950"
+            className="rounded border border-amber-500/40 bg-slate-800 px-3 py-2 font-mono text-xs font-bold text-amber-300 transition hover:bg-amber-500 hover:text-slate-950 sm:py-1"
           >
             🟠 JUPITER (GALILEO)
           </button>
           <button
             onClick={() => launchMission('huygens', 'HUYGENS LANDER')}
-            className="rounded border border-yellow-500/40 bg-slate-800 px-3 py-1 font-mono text-xs font-bold text-yellow-300 transition hover:bg-yellow-500 hover:text-slate-950"
+            className="rounded border border-yellow-500/40 bg-slate-800 px-3 py-2 font-mono text-xs font-bold text-yellow-300 transition hover:bg-yellow-500 hover:text-slate-950 sm:py-1"
           >
             🪐 SATURN / TITAN (HUYGENS)
           </button>

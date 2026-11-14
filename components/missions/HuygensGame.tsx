@@ -1,10 +1,16 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import {
+  playThrusterBurst,
+  playParachuteDeploy,
+  playAtmosphereBuffet,
+  playCrashExplosion,
+  playMissionCompleteFanfare,
+} from '@/utils/soundEffects';
 
 interface HuygensGameProps {
   isPaused: boolean;
-  resetSignal: number;
   onComplete: () => void;
 }
 
@@ -20,7 +26,31 @@ const CANVAS_W = 640;
 const CANVAS_H = 520;
 const START_ALTITUDE = 160;
 
-export default function HuygensGame({ isPaused, resetSignal, onComplete }: HuygensGameProps) {
+function createInitialSimState() {
+  const initialHazards: Hazard[] = Array.from({ length: 7 }, (_, i) => ({
+    x: 80 + ((i * 83) % (CANVAS_W - 160)),
+    y: 120 + i * 65,
+    radius: 22 + (i % 3) * 5,
+    vx: (i % 2 === 0 ? 1 : -1) * (0.7 + (i % 4) * 0.25),
+    type: i % 2 === 0 ? 'wind' : 'ice',
+  }));
+
+  return {
+    x: CANVAS_W / 2,
+    vx: 0,
+    altitude: START_ALTITUDE,
+    vy: 42,
+    heat: 25,
+    chuteDeployed: false,
+    padX: CANVAS_W / 2 + 85,
+    hazards: initialHazards,
+    keys: { left: false, right: false },
+    tick: 0,
+    lastBuffetTick: -20,
+  };
+}
+
+export default function HuygensGame({ isPaused, onComplete }: HuygensGameProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const completedRef = useRef(false);
 
@@ -33,42 +63,12 @@ export default function HuygensGame({ isPaused, resetSignal, onComplete }: Huyge
     chuteDeployed: false,
   });
 
-  const simRef = useRef({
-    x: CANVAS_W / 2,
-    vx: 0,
-    altitude: START_ALTITUDE,
-    vy: 42,
-    heat: 25,
-    chuteDeployed: false,
-    padX: CANVAS_W / 2 + 90,
-    hazards: [] as Hazard[],
-    keys: { left: false, right: false },
-    tick: 0,
-  });
+  const simRef = useRef(createInitialSimState());
 
   const resetGame = useCallback(() => {
     completedRef.current = false;
-    const initialHazards: Hazard[] = Array.from({ length: 7 }, (_, i) => ({
-      x: 80 + Math.random() * (CANVAS_W - 160),
-      y: 120 + i * 65,
-      radius: 22 + Math.random() * 14,
-      vx: (Math.random() > 0.5 ? 1 : -1) * (0.6 + Math.random() * 1.1),
-      type: i % 2 === 0 ? 'wind' : 'ice',
-    }));
-
-    simRef.current = {
-      x: CANVAS_W / 2,
-      vx: 0,
-      altitude: START_ALTITUDE,
-      vy: 42,
-      heat: 25,
-      chuteDeployed: false,
-      padX: 140 + Math.random() * (CANVAS_W - 280),
-      hazards: initialHazards,
-      keys: { left: false, right: false },
-      tick: 0,
-    };
-
+    simRef.current = createInitialSimState();
+    simRef.current.padX = 140 + Math.random() * (CANVAS_W - 280);
     setFailReason('');
     setHud({
       altitude: START_ALTITUDE,
@@ -79,21 +79,19 @@ export default function HuygensGame({ isPaused, resetSignal, onComplete }: Huyge
     setGameState('playing');
   }, []);
 
-  useEffect(() => {
-    resetGame();
-  }, [resetGame, resetSignal]);
-
   const deployParachute = useCallback(() => {
     const s = simRef.current;
     if (isPaused || gameState !== 'playing' || s.chuteDeployed) return;
 
     if (s.altitude > 125) {
+      playCrashExplosion();
       setFailReason('Parachute deployed too high in hypersonic entry — canopy shredded!');
       setGameState('crashed');
       return;
     }
 
     s.chuteDeployed = true;
+    playParachuteDeploy();
   }, [isPaused, gameState]);
 
   useEffect(() => {
@@ -148,6 +146,10 @@ export default function HuygensGame({ isPaused, resetSignal, onComplete }: Huyge
         const accel = s.chuteDeployed ? 0.28 : 0.36;
         if (s.keys.left) s.vx -= accel;
         if (s.keys.right) s.vx += accel;
+        if ((s.keys.left || s.keys.right) && s.tick % 6 === 0) {
+          playThrusterBurst();
+        }
+
         s.vx *= 0.92;
         s.x += s.vx;
         s.x = Math.max(36, Math.min(CANVAS_W - 36, s.x));
@@ -163,6 +165,7 @@ export default function HuygensGame({ isPaused, resetSignal, onComplete }: Huyge
         }
 
         if (s.heat >= 100) {
+          playCrashExplosion();
           setFailReason('Aeroshell thermal overload! Deploy parachute below 125 km to cool down.');
           setGameState('crashed');
         }
@@ -183,6 +186,10 @@ export default function HuygensGame({ isPaused, resetSignal, onComplete }: Huyge
           const probeY = s.altitude > 20 ? 170 : 170 + ((20 - s.altitude) / 20) * 265;
           const dist = Math.hypot(s.x - h.x, probeY - h.y);
           if (dist < h.radius + 16 && s.altitude > 8) {
+            if (s.tick - s.lastBuffetTick > 14) {
+              playAtmosphereBuffet();
+              s.lastBuffetTick = s.tick;
+            }
             if (h.type === 'wind') {
               s.vx += h.vx * 2.8;
               s.heat = Math.min(100, s.heat + 0.6);
@@ -196,14 +203,17 @@ export default function HuygensGame({ isPaused, resetSignal, onComplete }: Huyge
         if (s.altitude <= 0) {
           const offset = Math.abs(s.x - s.padX);
           if (!s.chuteDeployed || s.vy > 8) {
+            playCrashExplosion();
             setFailReason(
               `Hard impact at ${s.vy.toFixed(1)} m/s! You must deploy the parachute before landing.`
             );
             setGameState('crashed');
           } else if (offset > 56) {
+            playCrashExplosion();
             setFailReason('Missed the Xanadu solid shoreline and sank into a liquid methane lake!');
             setGameState('crashed');
           } else {
+            playMissionCompleteFanfare();
             setGameState('landed');
             if (!completedRef.current) {
               completedRef.current = true;
@@ -430,14 +440,13 @@ export default function HuygensGame({ isPaused, resetSignal, onComplete }: Huyge
         )}
       </div>
 
-      <div className="mt-3 flex w-full max-w-[640px] items-center justify-between gap-2">
+      {/* Desktop-only button bar */}
+      <div className="mt-3 hidden w-full max-w-[640px] items-center justify-between gap-2 md:flex">
         <div className="flex gap-2">
           <button
             onMouseDown={() => (simRef.current.keys.left = true)}
             onMouseUp={() => (simRef.current.keys.left = false)}
             onMouseLeave={() => (simRef.current.keys.left = false)}
-            onTouchStart={() => (simRef.current.keys.left = true)}
-            onTouchEnd={() => (simRef.current.keys.left = false)}
             className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 font-mono text-xs font-bold text-white active:bg-slate-700"
           >
             ◀ THRUST LEFT
@@ -446,8 +455,6 @@ export default function HuygensGame({ isPaused, resetSignal, onComplete }: Huyge
             onMouseDown={() => (simRef.current.keys.right = true)}
             onMouseUp={() => (simRef.current.keys.right = false)}
             onMouseLeave={() => (simRef.current.keys.right = false)}
-            onTouchStart={() => (simRef.current.keys.right = true)}
-            onTouchEnd={() => (simRef.current.keys.right = false)}
             className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 font-mono text-xs font-bold text-white active:bg-slate-700"
           >
             THRUST RIGHT ▶

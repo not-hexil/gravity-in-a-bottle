@@ -1,10 +1,15 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import {
+  playWaypointPing,
+  playRoverDrivePulse,
+  playProbeCollected,
+  playMissionCompleteFanfare,
+} from '@/utils/soundEffects';
 
 interface LunokhodGameProps {
   isPaused: boolean;
-  resetSignal: number;
   onComplete: () => void;
 }
 
@@ -35,54 +40,41 @@ const CRATERS: Crater[] = [
   { x: 220, y: 290, r: 18 },
 ];
 
-export default function LunokhodGame({ isPaused, resetSignal, onComplete }: LunokhodGameProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const completedRef = useRef(false);
-
-  const [collectedCount, setCollectedCount] = useState(0);
-  const [completed, setCompleted] = useState(false);
-
-  const simRef = useRef({
+function createInitialSimState() {
+  return {
     roverX: 90,
     roverY: 240,
     angle: 0,
     targetX: null as number | null,
     targetY: null as number | null,
     tracks: [] as { x: number; y: number; angle: number }[],
-    probes: [] as ProbeBeacon[],
-    keys: { up: false, down: false, left: false, right: false },
-    tick: 0,
-  });
-
-  const initProbes = useCallback(() => {
-    completedRef.current = false;
-    setCollectedCount(0);
-    setCompleted(false);
-
-    const probes: ProbeBeacon[] = [
+    probes: [
       { id: 1, x: 210, y: 95, collected: false },
       { id: 2, x: 540, y: 175, collected: false },
       { id: 3, x: 310, y: 375, collected: false },
       { id: 4, x: 535, y: 415, collected: false },
       { id: 5, x: 115, y: 415, collected: false },
-    ];
+    ] as ProbeBeacon[],
+    keys: { up: false, down: false, left: false, right: false },
+    tick: 0,
+  };
+}
 
-    simRef.current = {
-      roverX: 90,
-      roverY: 240,
-      angle: 0,
-      targetX: null,
-      targetY: null,
-      tracks: [],
-      probes,
-      keys: { up: false, down: false, left: false, right: false },
-      tick: 0,
-    };
+export default function LunokhodGame({ isPaused, onComplete }: LunokhodGameProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const completedRef = useRef(false);
+
+  const [collectedCount, setCollectedCount] = useState(0);
+  const [completed, setCompleted] = useState(false);
+
+  const simRef = useRef(createInitialSimState());
+
+  const handleReset = useCallback(() => {
+    completedRef.current = false;
+    simRef.current = createInitialSimState();
+    setCollectedCount(0);
+    setCompleted(false);
   }, []);
-
-  useEffect(() => {
-    initProbes();
-  }, [initProbes, resetSignal]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -95,6 +87,9 @@ export default function LunokhodGame({ isPaused, resetSignal, onComplete }: Luno
       if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') simRef.current.keys.left = true;
       if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D')
         simRef.current.keys.right = true;
+      if (e.key === ' ') {
+        playWaypointPing();
+      }
     };
 
     const onKeyUp = (e: KeyboardEvent) => {
@@ -134,7 +129,10 @@ export default function LunokhodGame({ isPaused, resetSignal, onComplete }: Luno
         if (s.keys.left) dx -= 1;
         if (s.keys.right) dx += 1;
 
+        let isMoving = false;
+
         if (dx !== 0 || dy !== 0) {
+          isMoving = true;
           s.targetX = null;
           s.targetY = null;
           const len = Math.hypot(dx, dy);
@@ -152,6 +150,7 @@ export default function LunokhodGame({ isPaused, resetSignal, onComplete }: Luno
           const tdy = s.targetY - s.roverY;
           const dist = Math.hypot(tdx, tdy);
           if (dist > 4) {
+            isMoving = true;
             const speed = 3.2;
             s.roverX += (tdx / dist) * speed;
             s.roverY += (tdy / dist) * speed;
@@ -165,6 +164,10 @@ export default function LunokhodGame({ isPaused, resetSignal, onComplete }: Luno
             s.targetX = null;
             s.targetY = null;
           }
+        }
+
+        if (isMoving && s.tick % 9 === 0) {
+          playRoverDrivePulse();
         }
 
         s.roverX = Math.max(28, Math.min(CANVAS_W - 28, s.roverX));
@@ -183,8 +186,11 @@ export default function LunokhodGame({ isPaused, resetSignal, onComplete }: Luno
           setCollectedCount(count);
           if (count === TOTAL_PROBES && !completedRef.current) {
             completedRef.current = true;
+            playMissionCompleteFanfare();
             setCompleted(true);
             setTimeout(() => onComplete(), 800);
+          } else {
+            playProbeCollected(count);
           }
         }
       }
@@ -298,6 +304,7 @@ export default function LunokhodGame({ isPaused, resetSignal, onComplete }: Luno
     const scaleY = canvas.height / rect.height;
     simRef.current.targetX = (e.clientX - rect.left) * scaleX;
     simRef.current.targetY = (e.clientY - rect.top) * scaleY;
+    playWaypointPing();
   };
 
   return (
@@ -310,7 +317,7 @@ export default function LunokhodGame({ isPaused, resetSignal, onComplete }: Luno
           PROBES RECOVERED: {collectedCount} / {TOTAL_PROBES}
         </span>
         <button
-          onClick={initProbes}
+          onClick={handleReset}
           className="rounded border border-slate-700 bg-slate-800 px-2.5 py-1 text-[11px] text-slate-300 hover:border-amber-400 hover:text-white"
         >
           RESET

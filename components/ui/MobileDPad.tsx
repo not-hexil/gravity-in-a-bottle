@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react';
 import { MissionSlug } from '@/types/game';
+import { playMechKeyPress, playMechKeyRelease } from '@/utils/soundEffects';
 
 interface MobileDPadProps {
   slug: MissionSlug;
@@ -21,16 +22,21 @@ export default function MobileDPad({ slug, disabled = false }: MobileDPadProps) 
   const pressKey = (key: string) => {
     if (disabled || activeKeysRef.current.has(key)) return;
     activeKeysRef.current.add(key);
+    playMechKeyPress(key === ' ');
     window.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
   };
 
   const releaseKey = (key: string) => {
     if (!activeKeysRef.current.has(key)) return;
     activeKeysRef.current.delete(key);
+    playMechKeyRelease();
     window.dispatchEvent(new KeyboardEvent('keyup', { key, bubbles: true }));
   };
 
   const releaseAll = () => {
+    if (activeKeysRef.current.size > 0) {
+      playMechKeyRelease();
+    }
     activeKeysRef.current.forEach((key) => {
       window.dispatchEvent(new KeyboardEvent('keyup', { key, bubbles: true }));
     });
@@ -43,7 +49,7 @@ export default function MobileDPad({ slug, disabled = false }: MobileDPadProps) 
   return (
     <div
       onTouchCancel={releaseAll}
-      className="mt-4 flex w-full max-w-[640px] items-center justify-between rounded-xl border-2 border-slate-800 bg-slate-900/95 px-6 py-4 shadow-xl md:hidden select-none"
+      className="mt-4 flex w-full max-w-[640px] select-none items-center justify-between rounded-xl border-2 border-slate-800 bg-slate-900/95 px-6 py-4 shadow-xl md:hidden"
     >
       {/* Cross D-Pad */}
       <div className="grid grid-cols-3 grid-rows-3 gap-1">
@@ -111,7 +117,7 @@ export default function MobileDPad({ slug, disabled = false }: MobileDPadProps) 
           onPointerUp={() => releaseKey(' ')}
           onPointerLeave={() => releaseKey(' ')}
           onPointerCancel={() => releaseKey(' ')}
-          className="flex h-16 w-16 select-none items-center justify-center rounded-full border-4 border-amber-300 bg-amber-500 font-mono text-xs font-extrabold tracking-wider text-slate-950 shadow-lg active:scale-95 active:bg-amber-400 touch-none"
+          className="flex h-16 w-16 touch-none select-none items-center justify-center rounded-full border-4 border-amber-300 bg-amber-500 font-mono text-xs font-extrabold tracking-wider text-slate-950 shadow-lg active:scale-95 active:bg-amber-400"
         >
           {ACTION_LABELS[slug]}
         </button>
