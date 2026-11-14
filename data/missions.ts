@@ -37,6 +37,24 @@ export const MISSION_MODALS: Record<MissionSlug, MissionModalData> = {
     ],
   },
 
+  surveyor3: {
+    slug: 'surveyor3',
+    title: 'SURVEYOR 3 & APOLLO 12',
+    subtitle: 'NASA Surveyor Program • Oceanus Procellarum, The Moon (1967 & 1969)',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/45/AS12-48-7136HR.jpg',
+    imageCaption: 'Apollo 12 astronaut Alan Bean inspecting Surveyor 3 with Lunar Module Intrepid in the background',
+    paragraphs: [
+      'Soft-landing inside a 200-meter crater in Oceanus Procellarum on April 20, 1967, NASA’s Surveyor 3 bounced twice across the lunar slope before deploying its pantograph surface-sampler scoop to dig four trenches and test whether lunar regolith could support crewed Apollo landers.',
+      'Over 18 hours of robotic soil mechanics operations, Surveyor 3’s claw crushed lunar clods, measured bearing strength, and transmitted 6,315 television images back to Earth—proving the Moon’s surface had the firmness of wet beach sand.',
+      'Thirty-one months later, on November 19, 1969, Apollo 12 astronauts Pete Conrad and Alan Bean executed a pinpoint landing just 160 meters away, walked down the crater wall to inspect Surveyor 3, and returned its television camera and scoop to Earth.',
+    ],
+    stats: [
+      { label: 'Landing Site', value: 'Oceanus Procellarum' },
+      { label: 'Trenches Dug', value: '4 Regolith Trenches' },
+      { label: 'Apollo 12 Distance', value: '160 Meters' },
+    ],
+  },
+
   galileo: {
     slug: 'galileo',
     title: 'GALILEO ATMOSPHERIC PROBE',
@@ -74,11 +92,47 @@ export const MISSION_MODALS: Record<MissionSlug, MissionModalData> = {
       { label: 'Max Altitude', value: '24 Meters' },
     ],
   },
+  venera13: {
+      slug: 'venera13',
+      title: 'VENERA 13 LANDER',
+      subtitle: 'Soviet Venera Program • Phoebe Regio, Venus (1982)',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Venera_13_surface.jpg',
+      imageCaption: 'Venera 13: First color panoramic photograph transmitted from the surface of Venus',
+      paragraphs: [
+        'Plunging through Venus’s dense sulfuric acid clouds on March 1, 1982, the Soviet Venera 13 descent module used an aerodynamic braking ring rather than a full parachute in the lower supercritical atmosphere to reach the volcanic plains of Phoebe Regio.',
+        'Built with a thick titanium pressure hull designed to withstand 92 atmospheres of crushing carbon dioxide pressure and 465 °C heat, Venera 13 deployed a spring-loaded soil drill, analyzed a basalt sample via X-ray fluorescence, and captured the first color panoramas of Venus.',
+        'Engineered to survive just 32 minutes on the hellish surface, Venera 13 defied expectations by operating and beaming telemetry to its flyby spacecraft for 127 minutes before succumbing to the heat.',
+      ],
+      stats: [
+        { label: 'Landing Date', value: 'Mar 1, 1982' },
+        { label: 'Surface Survival', value: '127 Minutes' },
+        { label: 'Surface Conditions', value: '465 °C • 92 Bar' },
+      ],
+  },
+  messenger: {
+      slug: 'messenger',
+      title: 'MESSENGER ORBITER & IMPACTOR',
+      subtitle: 'NASA Discovery Mission • Mercury & Shakespeare Crater (2011–2015)',
+      imageUrl: 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/07/messenger.jpg',
+      imageCaption: 'MESSENGER spacecraft with its ceramic-cloth sunshade facing the Sun',
+      paragraphs: [
+        'Entering orbit around Mercury in March 2011, NASA’s MESSENGER spacecraft endured solar radiation eleven times brighter than at Earth—keeping its instruments at room temperature behind a lightweight ceramic-cloth sunshade while daytime surface temperatures outside reached 430 °C.',
+        'Over four years and 4,105 orbits, MESSENGER mapped 100% of Mercury’s surface, revealed that its iron core spans roughly 85% of the planet’s radius, and confirmed water ice trapped inside permanently shadowed polar craters.',
+        'After exhausting its hydrazine propellant and even firing non-fuel helium pressurant gas to extend its mission, MESSENGER slammed into Mercury near Shakespeare Crater on April 30, 2015 at 3.91 km/s—carving a new 16-meter impact crater into the crust.',
+      ],
+      stats: [
+        { label: 'Orbit Duration', value: '4 Years (4,105 Orbits)' },
+        { label: 'Impact Date', value: 'Apr 30, 2015' },
+        { label: 'Impact Speed', value: '3.91 km/s (~16 m Crater)' },
+      ],
+    },
 };
 
 export const MISSION_INSTRUCTIONS: Record<MissionSlug, MissionInstructionData> = {
   huygens: {
     slug: 'huygens',
+    targetWorld: 'SATURN VI • TITAN',
+    missionTitle: 'HUYGENS TITAN DESCENT',
     title: 'HUYGENS TITAN DESCENT',
     objective:
       'Guide the Huygens probe across 3 atmospheric stages (~2 mins each) into Titan’s thick orange haze. Deploy your parachute below 130 km, shield or blast incoming storm orbs, and land on Xanadu.',
@@ -97,6 +151,8 @@ export const MISSION_INSTRUCTIONS: Record<MissionSlug, MissionInstructionData> =
 
   lunokhod: {
     slug: 'lunokhod',
+    targetWorld: 'EARTH • MARE IMBRIUM (THE MOON)',
+    missionTitle: 'LUNOKHOD 1 LUNAR TRAVERSE',
     title: 'LUNOKHOD 1 LUNAR TRAVERSE',
     objective:
       'Navigate Lunokhod 1 across 3 expanding lunar sectors (~2 mins each). Recover all surface and buried telemetry beacons while avoiding jagged craters.',
@@ -113,8 +169,30 @@ export const MISSION_INSTRUCTIONS: Record<MissionSlug, MissionInstructionData> =
     ],
   },
 
+  surveyor3: {
+    slug: 'surveyor3',
+    targetWorld: 'EARTH • OCEANUS PROCELLARUM (THE MOON)',
+    missionTitle: 'SURVEYOR 3: REGOLITH SCOOP & APOLLO 12',
+    title: 'SURVEYOR 3: REGOLITH SCOOP & APOLLO 12',
+    objective:
+      'Operate Surveyor 3’s pantograph sampler arm across 3 lunar crater phases: excavate regolith trenches, perform soil bearing-strength tests, and align optical beacons for Apollo 12.',
+    controls: [
+      { key: '← / → or A / D', action: 'Swing sampler boom azimuth left / right' },
+      { key: '↑ / ↓ or W / S', action: 'Extend / retract pantograph arm reach' },
+      { key: 'SPACE', action: 'Fire Scoop Claw / Bearing Drop / Optical Ping' },
+      { key: 'P / ESC', action: 'Pause simulation & view briefing' },
+    ],
+    tips: [
+      'Position the glowing yellow claw crosshair directly over amber regolith zones before pressing [SPACE].',
+      'Avoid scooping dark basalt bedrock slabs—striking rock spikes Arm Strain!',
+      'In Stage 3, calibrate all optical markers while Apollo 12’s LM Intrepid descends onto the crater rim.',
+    ],
+  },
+
   galileo: {
     slug: 'galileo',
+    targetWorld: 'JUPITER • EQUATORIAL CLOUD DECK',
+    missionTitle: 'GALILEO JUPITER PLUNGE',
     title: 'GALILEO JUPITER PLUNGE',
     objective:
       'Plunge through 3 Jovian cloud decks (~2 mins each). Stay inside the Orbiter Relay Beam, tune your carrier frequency band, collect sample rings, and survive 22-bar pressure.',
@@ -132,6 +210,8 @@ export const MISSION_INSTRUCTIONS: Record<MissionSlug, MissionInstructionData> =
 
   ingenuity: {
     slug: 'ingenuity',
+    targetWorld: 'MARS • JEZERO CRATER',
+    missionTitle: 'INGENUITY MARS FLIGHT',
     title: 'INGENUITY MARS FLIGHT',
     objective:
       'Pilot Ingenuity across 3 Jezero Crater flight campaigns (~2 mins each). Scan all aerial waypoints while battling shifting Martian winds before landing on the helipad.',
@@ -146,4 +226,41 @@ export const MISSION_INSTRUCTIONS: Record<MissionSlug, MissionInstructionData> =
       'Scan every waypoint before touching down on the final helipad at the end of the canyon.',
     ],
   },
+  venera13: {
+      slug: 'venera13',
+      targetWorld: 'VENUS • PHOEBE REGIO',
+      missionTitle: 'VENERA 13: SUPERCRITICAL DESCENT',
+      title: 'VENERA 13: SUPERCRITICAL DESCENT',
+      objective:
+        'Guide Venera 13 across 3 Venusian phases: survive sulfuric acid clouds, deploy your aerobraking ring below 18 km onto Phoebe Regio, and drill & beam surface telemetry before Hull Heat hits 100%.',
+      controls: [
+        { key: '← / → or A / D', action: 'Steer descent module through cloud currents' },
+        { key: 'SPACE', action: 'Vent Coolant (Stage 1) • Deploy Brake (Stage 2) • Drill & Beam (Stage 3)' },
+        { key: 'P / ESC', action: 'Pause simulation & view briefing' },
+      ],
+      tips: [
+        'In Stage 1, collect blue spectrometer packets and press [SPACE] to vent heat.',
+        'In Stage 2, wait until altitude drops below 18 km before pressing [SPACE] to deploy the drag ring.',
+        'In Stage 3, rapidly pulse [SPACE] to drill the basalt sample and upload the color panorama before hitting 465 °C!',
+      ],
+  },
+  messenger: {
+      slug: 'messenger',
+      targetWorld: 'MERCURY • POLAR ORBIT & SHAKESPEARE CRATER',
+      missionTitle: 'MESSENGER: SUNSHADE & FINAL IMPACT',
+      title: 'MESSENGER: SUNSHADE & FINAL IMPACT',
+      objective:
+        'Protect MESSENGER behind its ceramic sunshade in 430 °C solar glare, scan permanently shadowed polar craters for water ice, and guide its final helium-thruster deorbit crash into Shakespeare Crater.',
+      controls: [
+        { key: '← / → or A / D', action: 'Rotate Sunshade (Stage 1) • Steer Orbiter (Stages 2 & 3)' },
+        { key: 'SPACE', action: 'Scan Core (Stage 1) • Neutron Ice Ping (Stage 2) • Helium Hop (Stage 3)' },
+        { key: 'P / ESC', action: 'Pause simulation & view briefing' },
+      ],
+      tips: [
+        'Stage 1: Keep the green sunshade cone blocking the moving Sun before pressing [SPACE] to log scans.',
+        'Stage 2: Stay out of the glowing horizon sun glare and pulse [SPACE] directly over dark polar craters.',
+        'Stage 3: Tap [SPACE] to fire emergency helium gas hops over tall volcanic ridges, then crash straight into Shakespeare Crater!',
+      ],
+    },
+
 };

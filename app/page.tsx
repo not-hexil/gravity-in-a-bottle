@@ -8,7 +8,7 @@ export default function HomePage() {
           🪐 SOLAR SYSTEM MISSION CONTROL
         </h1>
         <p className="mt-1 font-mono text-xs text-slate-400 sm:text-sm">
-          Select a target world with an active probe mission—or click any planet to ping telemetry
+          Select any celestial body to inspect planetary archives, artifacts, and field simulations
         </p>
       </header>
 

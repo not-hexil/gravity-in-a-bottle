@@ -8,6 +8,9 @@ export function generateStaticParams() {
     { slug: 'lunokhod' },
     { slug: 'galileo' },
     { slug: 'ingenuity' },
+    { slug: 'surveyor3' },
+    { slug: 'venera13' },
+    {slug: 'messenger'}
   ];
 }
 

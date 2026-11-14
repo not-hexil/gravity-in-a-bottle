@@ -39,7 +39,7 @@ interface CoolPocket {
 
 interface LightningBolt {
   x: number;
-  warningTimer: number; // counts down from 90 frames (1.5s) -> strikes at 0
+  warningTimer: number; // counts down from 90 frames (1.5s), strikes at 0
   strikeTimer: number;
 }
 
