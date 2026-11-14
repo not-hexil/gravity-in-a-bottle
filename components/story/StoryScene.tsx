@@ -19,7 +19,6 @@ export interface AssetOverrides {
   getPortraitUrl?: (speaker: number) => string | null;
 }
 
-// Scene 00
 type S0Phase = 'TITLE' | 'PLAYING_LORE' | 'READY_TO_PLAY';
 
 export const Scene0LoreIntro: React.FC<{
@@ -56,16 +55,16 @@ export const Scene0LoreIntro: React.FC<{
   }, [phase, charCount, lineIndex, currentLine]);
 
   const handleAdvance = useCallback(() => {
-      if (phase === 'TITLE') {
-        retroAudio.playBootBeep();
-        setPhase('PLAYING_LORE');
-        setLineIndex(0);
-        setCharCount(0);
-      } else if (phase === 'READY_TO_PLAY') {
-        retroAudio.playBootBeep();
-        onComplete();
-      }
-    }, [phase, onComplete]);
+    if (phase === 'TITLE') {
+      retroAudio.playBootBeep();
+      setPhase('PLAYING_LORE');
+      setLineIndex(0);
+      setCharCount(0);
+    } else if (phase === 'READY_TO_PLAY') {
+      retroAudio.playBootBeep();
+      onComplete();
+    }
+  }, [phase, onComplete]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -81,9 +80,9 @@ export const Scene0LoreIntro: React.FC<{
   return (
     <div
       onClick={handleAdvance}
-            className={`relative w-full h-screen bg-black text-white font-mono flex flex-col items-center justify-center p-6 overflow-hidden select-none ${
-              phase === 'PLAYING_LORE' ? 'cursor-default' : 'cursor-pointer'
-        }`}
+      className={`relative w-full h-screen bg-black text-white font-mono flex flex-col items-center justify-center p-6 overflow-hidden select-none ${
+        phase === 'PLAYING_LORE' ? 'cursor-default' : 'cursor-pointer'
+      }`}
       style={{
         backgroundImage: assets?.loreBg ? `url(${assets.loreBg})` : undefined,
         backgroundSize: 'cover',
@@ -91,7 +90,6 @@ export const Scene0LoreIntro: React.FC<{
         imageRendering: 'pixelated',
       }}
     >
-      {/* Fallback CSS Pixel Starfield */}
       {!assets?.loreBg && (
         <div className="absolute inset-0 pointer-events-none opacity-80">
           {Array.from({ length: 45 }).map((_, i) => (
@@ -152,7 +150,6 @@ export const Scene0LoreIntro: React.FC<{
   );
 };
 
-// SCENE 01
 export const Scene1CrewDeck: React.FC<{
   onComplete: () => void;
   assets?: AssetOverrides;
@@ -183,7 +180,6 @@ export const Scene1CrewDeck: React.FC<{
         imageRendering: 'pixelated',
       }}
     >
-      {/* Location Banner */}
       <div className="z-10 flex justify-between items-center bg-slate-950/90 border-2 border-amber-500/70 px-4 py-2 text-xs md:text-sm">
         <span className="text-amber-400 font-bold tracking-wider">
           ODYSSEY-6 | CREW DECK
@@ -193,7 +189,6 @@ export const Scene1CrewDeck: React.FC<{
         </span>
       </div>
 
-      {/* Top-Down Room Stage with 6 Crew Sprites */}
       <div className="relative z-10 flex-1 flex items-center justify-center">
         <div className="grid grid-cols-3 md:grid-cols-6 gap-6 md:gap-10 items-center bg-slate-950/60 p-6 rounded border border-slate-700/80">
           {[1, 2, 3, 4, 5, 6].map((id) => {
@@ -233,7 +228,6 @@ export const Scene1CrewDeck: React.FC<{
         </div>
       </div>
 
-      {/* Dialogue Box D1 - D14 */}
       <div className="z-10">
         <StoryDialogueBox
           line={currentLine}
@@ -245,7 +239,6 @@ export const Scene1CrewDeck: React.FC<{
   );
 };
 
-// Overlay for Final Transmission
 const FinalImpactOverlay: React.FC<{
   onViewCredits: () => void;
   onGoHome: () => void;
@@ -271,7 +264,6 @@ const FinalImpactOverlay: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/98 text-white font-mono flex flex-col items-center justify-center p-6 text-center overflow-hidden">
-      {/* CRT scanlines + radial cyan glow */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
@@ -281,7 +273,6 @@ const FinalImpactOverlay: React.FC<{
         }}
       />
 
-      {/* Expanding signal pulse rings */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute w-72 h-72 md:w-[32rem] md:h-[32rem] rounded-full border border-cyan-400/25 animate-ping"
@@ -329,7 +320,6 @@ const FinalImpactOverlay: React.FC<{
   );
 };
 
-// Scene 04
 export const Scene4Ending: React.FC<{
   onComplete: () => void;
   onGoHome?: () => void;
@@ -342,7 +332,6 @@ export const Scene4Ending: React.FC<{
   const showSignalShip = index >= 6;
 
   const handleNext = () => {
-    // Trigger the full-screen impact finale
     if (currentLine.id === 'E7' || index >= S4_DIALOGUE.length - 1) {
       setShowImpactFinale(true);
     } else {
@@ -376,7 +365,6 @@ export const Scene4Ending: React.FC<{
         </span>
       </div>
 
-      {/* Visual Stage */}
       <div className="relative z-10 flex-1 flex items-center justify-center">
         {showSignalShip && !assets?.endingBg ? (
           <div className="text-center space-y-3 bg-slate-950/80 border-2 border-cyan-400 p-6 rounded">
@@ -392,19 +380,29 @@ export const Scene4Ending: React.FC<{
             {[1, 2, 3, 4, 5, 6].map((id) => {
               const member = CREW[id];
               const isSpeaking = currentLine.speaker === id;
+              const spriteUrl = assets?.getSpriteUrl ? assets.getSpriteUrl(id) : null;
+
               return (
                 <div
                   key={id}
-                  className={`flex flex-col items-center ${
+                  className={`flex flex-col items-center transition-transform duration-200 ${
                     isSpeaking ? '-translate-y-2 scale-110' : 'opacity-85'
                   }`}
                 >
-                  <div
-                    className="w-12 h-12 border-2 border-amber-200 flex items-center justify-center text-xs font-bold"
-                    style={{ backgroundColor: member.suitColor }}
-                  >
-                    C{id}
-                  </div>
+                  {spriteUrl ? (
+                    <img
+                      src={spriteUrl}
+                      alt={member.name}
+                      className="w-16 h-16 object-contain"
+                    />
+                  ) : (
+                    <div
+                      className="w-12 h-12 border-2 border-amber-200 flex items-center justify-center text-xs font-bold"
+                      style={{ backgroundColor: member.suitColor }}
+                    >
+                      C{id}
+                    </div>
+                  )}
                   <span className="mt-2 text-[11px] bg-black/75 px-1.5 py-0.5 rounded">
                     {member.name}
                   </span>
@@ -415,7 +413,6 @@ export const Scene4Ending: React.FC<{
         ) : null}
       </div>
 
-      {/* Dialogue Box E1 - E7 */}
       {!showImpactFinale && (
         <div className="z-10">
           <StoryDialogueBox
@@ -436,7 +433,6 @@ export const Scene4Ending: React.FC<{
   );
 };
 
-// Scene 05 | Credits
 export const Scene5Credits: React.FC<{
   onRestart?: () => void;
   onGoHome?: () => void;

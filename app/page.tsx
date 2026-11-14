@@ -30,7 +30,7 @@ function getIntroSeenSnapshot(): boolean {
 }
 
 function getIntroSeenServerSnapshot(): boolean | null {
-  return null; // Prevents hydration flash before client snapshot resolves
+  return null;
 }
 
 export default function HomePage() {
@@ -40,7 +40,6 @@ export default function HomePage() {
     getIntroSeenServerSnapshot
   );
 
-  // Explicit user/dev overrides take precedence over sessionStorage default
   const [overrideScene, setOverrideScene] = useState<SceneState | null>(null);
 
   if (introSeen === null) {
@@ -56,16 +55,15 @@ export default function HomePage() {
   };
 
   const storyAssets: AssetOverrides = {
-      getPortraitUrl: (speaker: number) => `/assets/mugshots/c${speaker}.png`,
-      loreBg: '/assets/lore_bg.png',
-      crewDeckBg: '/assets/crew_deck.png',
-      endingBg: '/assets/ending_bg.jpg',
-      // getSpriteUrl: (speaker: number) => `/assets/sprites/c${speaker}_idle.png`,
-    };
+    getPortraitUrl: (speaker: number) => `/assets/mugshots/c${speaker}.png`,
+    loreBg: '/assets/lore_bg.png',
+    crewDeckBg: '/assets/crew_deck.png',
+    endingBg: '/assets/ending_bg.jpg',
+    getSpriteUrl: (speaker: number) => `/assets/sprites/c${speaker}.png`,
+  };
 
   return (
     <div className="relative min-h-screen bg-slate-950">
-      {/* Quick Dev Switcher (remove before final submission if desired) */}
       <div className="fixed top-2 right-2 z-50 flex gap-1 rounded border border-slate-700 bg-slate-950/90 p-1 font-mono text-[10px] text-slate-300 opacity-60 hover:opacity-100">
         {(['S0', 'S1', 'S2_RADAR', 'S4', 'S5'] as SceneState[]).map((s) => (
           <button
@@ -104,7 +102,11 @@ export default function HomePage() {
       )}
 
       {scene === 'S4' && (
-        <Scene4Ending assets={storyAssets} onComplete={() => setOverrideScene('S5')} />
+        <Scene4Ending
+          assets={storyAssets}
+          onComplete={() => setOverrideScene('S5')}
+          onGoHome={() => setOverrideScene('S2_RADAR')}
+        />
       )}
 
       {scene === 'S5' && (
@@ -114,6 +116,7 @@ export default function HomePage() {
             window.dispatchEvent(new Event(INTRO_EVENT));
             setOverrideScene('S0');
           }}
+          onGoHome={() => setOverrideScene('S2_RADAR')}
         />
       )}
     </div>

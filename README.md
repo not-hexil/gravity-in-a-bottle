@@ -39,8 +39,8 @@ Mission parameters, engineering constraints, and archival photography are ground
 ---
 
 ## 💻 Tech Stack
-- **Framework**: Next.js (App Router), React 19, TypeScript
-- **Styling & Layout**: Tailwind CSS (Mobile-First Responsive Design)
+- **Framework**: Next.js 16, React 19, TypeScript
+- **Styling & Layout**: Tailwind CSS
 - **Simulation & Audio**: HTML5 Canvas 2D Engine & Zero-Dependency Web Audio API Procedural Synthesizer
 - **Persistence**: Client-Side `localStorage` Mission Archive State
 
@@ -60,8 +60,9 @@ All source code is open-source under the [MIT License](LICENSE). Archival missio
 ---
 
 ## 🤖 AI Disclosure
-Artificial intelligence tools were utilized during the development of this project for **debugging**, **asset generation**, and **coding assistance** (including TypeScript/React component structuring, HTML5 Canvas simulation logic, and Web Audio API sound synthesis). All scientific facts, historical mission milestones, and educational content were curated and verified against official space agency records.
+Artificial intelligence tools were utilized during the development of this project for **debugging**, **asset generation**, and **coding assistance**.  
+All scientific facts, historical mission milestones, and educational content were curated and verified against official space agency records manually.
 
 ---
 
-> “Across silent craters, methane seas, and crushing orange clouds, humanity’s quietest explorers still stand watch.”
+> “Still looking for a catchphrase!”
