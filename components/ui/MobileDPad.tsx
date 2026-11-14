@@ -1,22 +1,14 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { MissionSlug } from '@/types/game';
 import { playMechKeyPress, playMechKeyRelease } from '@/utils/soundEffects';
 
 interface MobileDPadProps {
-  slug: MissionSlug;
+  actionLabel: string;
   disabled?: boolean;
 }
 
-const ACTION_LABELS: Record<MissionSlug, string> = {
-  huygens: 'CHUTE',
-  lunokhod: 'PING',
-  galileo: 'BOOST',
-  ingenuity: 'LIFT',
-};
-
-export default function MobileDPad({ slug, disabled = false }: MobileDPadProps) {
+export default function MobileDPad({ actionLabel, disabled = false }: MobileDPadProps) {
   const activeKeysRef = useRef<Set<string>>(new Set());
 
   const pressKey = (key: string) => {
@@ -108,7 +100,7 @@ export default function MobileDPad({ slug, disabled = false }: MobileDPadProps) 
         <div />
       </div>
 
-      {/* Handheld Action Button (Spacebar) */}
+      {/* Context-Aware Action Button (Spacebar) */}
       <div className="flex flex-col items-center gap-1.5">
         <button
           type="button"
@@ -117,9 +109,9 @@ export default function MobileDPad({ slug, disabled = false }: MobileDPadProps) 
           onPointerUp={() => releaseKey(' ')}
           onPointerLeave={() => releaseKey(' ')}
           onPointerCancel={() => releaseKey(' ')}
-          className="flex h-16 w-16 touch-none select-none items-center justify-center rounded-full border-4 border-amber-300 bg-amber-500 font-mono text-xs font-extrabold tracking-wider text-slate-950 shadow-lg active:scale-95 active:bg-amber-400"
+          className="flex h-16 w-16 touch-none select-none items-center justify-center rounded-full border-4 border-amber-300 bg-amber-500 px-1 text-center font-mono text-[11px] font-extrabold leading-tight tracking-wider text-slate-950 shadow-lg active:scale-95 active:bg-amber-400"
         >
-          {ACTION_LABELS[slug]}
+          {actionLabel}
         </button>
         <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">
           ACTION [A]

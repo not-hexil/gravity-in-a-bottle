@@ -17,6 +17,13 @@ interface MissionClientShellProps {
   slug: MissionSlug;
 }
 
+const DEFAULT_ACTION_LABELS: Record<MissionSlug, string> = {
+  huygens: 'CHUTE',
+  lunokhod: 'PING',
+  galileo: 'TUNE',
+  ingenuity: 'LIFT',
+};
+
 export default function MissionClientShell({ slug }: MissionClientShellProps) {
   const router = useRouter();
   const missionData = MISSION_MODALS[slug];
@@ -26,6 +33,7 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
   const [instructionOpen, setInstructionOpen] = useState(true);
   const [completionModalOpen, setCompletionModalOpen] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
+  const [actionLabel, setActionLabel] = useState(DEFAULT_ACTION_LABELS[slug]);
 
   const handleStartOrResume = useCallback(() => {
     setHasStarted(true);
@@ -34,12 +42,12 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
 
   const handleRestart = useCallback(() => {
     setResetSignal((prev) => prev + 1);
+    setActionLabel(DEFAULT_ACTION_LABELS[slug]);
     setHasStarted(false);
     setInstructionOpen(true);
     setCompletionModalOpen(false);
-  }, []);
+  }, [slug]);
 
-  // Global Mechanical Keyboard Typing Sound + Pause/Help Keybind
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.isTrusted && !e.repeat) {
@@ -89,7 +97,6 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between bg-slate-950 px-3 py-4 text-slate-100 sm:justify-center sm:px-4 sm:py-6">
-      {/* Top Facility Header Bar */}
       <div className="mb-3 flex w-full max-w-[640px] items-center justify-between gap-2">
         <button
           onClick={() => router.push('/')}
@@ -110,12 +117,13 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
         </button>
       </div>
 
-      {/* Dedicated Minigame Viewport */}
       <div className="w-full max-w-[640px]">
         {slug === 'huygens' && (
           <HuygensGame
             key={resetSignal}
             isPaused={isPaused}
+            missionData={missionData}
+            onActionLabelChange={setActionLabel}
             onComplete={() => setCompletionModalOpen(true)}
           />
         )}
@@ -123,29 +131,33 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
           <LunokhodGame
             key={resetSignal}
             isPaused={isPaused}
+            missionData={missionData}
+            onActionLabelChange={setActionLabel}
             onComplete={() => setCompletionModalOpen(true)}
           />
         )}
         {slug === 'galileo' && (
-          <GalileoGame
-            key={resetSignal}
-            isPaused={isPaused}
-            onComplete={() => setCompletionModalOpen(true)}
-          />
-        )}
+                  <GalileoGame
+                    key={resetSignal}
+                    isPaused={isPaused}
+                    missionData={missionData}
+                    onActionLabelChange={setActionLabel}
+                    onComplete={() => setCompletionModalOpen(true)}
+                  />
+                )}
         {slug === 'ingenuity' && (
           <IngenuityGame
             key={resetSignal}
             isPaused={isPaused}
+            missionData={missionData}
+            onActionLabelChange={setActionLabel}
             onComplete={() => setCompletionModalOpen(true)}
           />
         )}
       </div>
 
-      {/* Universal Mobile D-Pad & Action Button */}
-      <MobileDPad slug={slug} disabled={isPaused} />
+      <MobileDPad actionLabel={actionLabel} disabled={isPaused} />
 
-      {/* Pre-Game Briefing & Pause Modal */}
       <InstructionModal
         isOpen={instructionOpen}
         isInitialStart={!hasStarted}
@@ -154,7 +166,6 @@ export default function MissionClientShell({ slug }: MissionClientShellProps) {
         onRestart={handleRestart}
       />
 
-      {/* Completion Dossier Modal */}
       <MissionModal
         isOpen={completionModalOpen}
         data={missionData}

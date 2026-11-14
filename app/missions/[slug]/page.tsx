@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import MissionClientShell from '@/components/missions/MissionClientShell';
 import { MissionSlug } from '@/types/game';
 
@@ -10,7 +11,7 @@ export function generateStaticParams() {
   ];
 }
 
-export default async function MissionPage({
+async function MissionContent({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -18,4 +19,22 @@ export default async function MissionPage({
   const { slug } = await params;
 
   return <MissionClientShell slug={slug as MissionSlug} />;
+}
+
+export default function MissionPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-slate-950 font-mono text-xs text-slate-400">
+          INITIALIZING TELEMETRY LINK...
+        </div>
+      }
+    >
+      <MissionContent params={params} />
+    </Suspense>
+  );
 }

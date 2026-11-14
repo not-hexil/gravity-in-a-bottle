@@ -33,7 +33,7 @@ function getNoiseBuffer(ctx: AudioContext): AudioBuffer {
 }
 
 // ---------------------------------------------------------------------------
-// 1. UNIVERSAL MECHANICAL KEYBOARD SWITCH CLICK (Keys & Mobile D-Pad)
+// 1. UNIVERSAL MECHANICAL KEYBOARD SWITCH CLICK
 // ---------------------------------------------------------------------------
 
 export function playMechKeyPress(isActionButton = false) {
@@ -41,7 +41,6 @@ export function playMechKeyPress(isActionButton = false) {
   if (!ctx) return;
   const now = ctx.currentTime;
 
-  // Tactile switch click transient (filtered noise burst)
   const noise = ctx.createBufferSource();
   noise.buffer = getNoiseBuffer(ctx);
 
@@ -61,7 +60,6 @@ export function playMechKeyPress(isActionButton = false) {
   noise.start(now);
   noise.stop(now + 0.025);
 
-  // Housing "thock" body resonance
   const thockOsc = ctx.createOscillator();
   const thockGain = ctx.createGain();
   thockOsc.type = 'triangle';
@@ -98,7 +96,7 @@ export function playMechKeyRelease() {
 }
 
 // ---------------------------------------------------------------------------
-// 2. SOLAR SYSTEM MAP SOUNDS
+// 2. SOLAR SYSTEM & STAGE PROGRESSION SOUNDS
 // ---------------------------------------------------------------------------
 
 export function playRandomSpaceBeep() {
@@ -145,9 +143,30 @@ export function playMissionLockSound() {
   });
 }
 
-// ---------------------------------------------------------------------------
-// 3. SHARED VICTORY / COMPLETION FANFARE
-// ---------------------------------------------------------------------------
+export function playCapabilityUnlockChime() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+
+  const notes = [440, 554.37, 659.25, 880];
+  notes.forEach((freq, idx) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const start = now + idx * 0.075;
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, start);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.11, start + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.24);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + 0.25);
+  });
+}
 
 export function playMissionCompleteFanfare() {
   const ctx = getAudioContext();
@@ -176,7 +195,7 @@ export function playMissionCompleteFanfare() {
 }
 
 // ---------------------------------------------------------------------------
-// 4. HUYGENS LANDER (TITAN DESCENT) AUDIO
+// 3. HUYGENS LANDER (TITAN DESCENT) AUDIO
 // ---------------------------------------------------------------------------
 
 export function playThrusterBurst() {
@@ -207,7 +226,6 @@ export function playParachuteDeploy() {
   if (!ctx) return;
   const now = ctx.currentTime;
 
-  // Canopy inflation billow (filtered noise sweep)
   const noise = ctx.createBufferSource();
   noise.buffer = getNoiseBuffer(ctx);
 
@@ -228,7 +246,6 @@ export function playParachuteDeploy() {
   noise.start(now);
   noise.stop(now + 0.46);
 
-  // Mortar deployment thump
   const osc = ctx.createOscillator();
   const oGain = ctx.createGain();
   osc.type = 'sine';
@@ -289,7 +306,7 @@ export function playCrashExplosion() {
 }
 
 // ---------------------------------------------------------------------------
-// 5. LUNOKHOD 1 (LUNAR ROVER) AUDIO
+// 4. LUNOKHOD 1 (LUNAR ROVER) AUDIO
 // ---------------------------------------------------------------------------
 
 export function playWaypointPing() {
@@ -310,6 +327,26 @@ export function playWaypointPing() {
   gain.connect(ctx.destination);
   osc.start(now);
   osc.stop(now + 0.15);
+}
+
+export function playSonarSweep() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(320, now);
+  osc.frequency.exponentialRampToValueAtTime(1420, now + 0.32);
+
+  gain.gain.setValueAtTime(0.12, now);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.36);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.38);
 }
 
 export function playRoverDrivePulse() {
@@ -354,7 +391,7 @@ export function playProbeCollected(count: number) {
 }
 
 // ---------------------------------------------------------------------------
-// 6. GALILEO PROBE (JUPITER PLUNGE) AUDIO
+// 5. GALILEO PROBE (JUPITER PLUNGE) AUDIO
 // ---------------------------------------------------------------------------
 
 export function playTelemetryDataTick(progressPercent: number) {
@@ -375,6 +412,26 @@ export function playTelemetryDataTick(progressPercent: number) {
   gain.connect(ctx.destination);
   osc.start(now);
   osc.stop(now + 0.05);
+}
+
+export function playMagneticShieldPulse() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(260, now);
+  osc.frequency.exponentialRampToValueAtTime(780, now + 0.18);
+
+  gain.gain.setValueAtTime(0.14, now);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.24);
 }
 
 export function playLightningZap() {
@@ -398,10 +455,10 @@ export function playLightningZap() {
 }
 
 // ---------------------------------------------------------------------------
-// 7. INGENUITY HELICOPTER (MARS FLIGHT) AUDIO
+// 6. INGENUITY HELICOPTER (MARS FLIGHT) AUDIO
 // ---------------------------------------------------------------------------
 
-export function playRotorPulse() {
+export function playRotorPulse(highRpm = false) {
   const ctx = getAudioContext();
   if (!ctx) return;
   const now = ctx.currentTime;
@@ -409,8 +466,8 @@ export function playRotorPulse() {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = 'triangle';
-  osc.frequency.setValueAtTime(115, now);
-  osc.frequency.exponentialRampToValueAtTime(165, now + 0.045);
+  osc.frequency.setValueAtTime(highRpm ? 145 : 115, now);
+  osc.frequency.exponentialRampToValueAtTime(highRpm ? 210 : 165, now + 0.045);
 
   gain.gain.setValueAtTime(0.055, now);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
@@ -426,7 +483,7 @@ export function playWaypointScanChime(scanIndex: number) {
   if (!ctx) return;
   const now = ctx.currentTime;
 
-  const notes = [587.33, 739.99, 880];
+  const notes = [587.33, 739.99, 880, 1046.5];
   const base = notes[Math.min(scanIndex - 1, notes.length - 1)] || 660;
 
   [base, base * 1.5].forEach((freq, i) => {
