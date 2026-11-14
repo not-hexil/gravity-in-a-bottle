@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MissionModalData } from '@/types/game';
+import { MissionModalData } from '@/lib/game';
 import {
   playProbeCollected,
   playRockBump,
   playRoverDrivePulse,
   playCapabilityUnlockChime,
   playMissionCompleteFanfare,
-} from '@/utils/soundEffects';
+} from '@/lib/soundEffects';
 
 interface Surveyor3GameProps {
   isPaused: boolean;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MissionModalData } from '@/types/game';
+import { MissionModalData } from '@/lib/game';
 import {
   playThrusterBurst,
   playParachuteDeploy,
@@ -10,7 +10,7 @@ import {
   playCapabilityUnlockChime,
   playMissionCompleteFanfare,
   playCrashExplosion,
-} from '@/utils/soundEffects';
+} from '@/lib/soundEffects';
 
 interface Venera13GameProps {
   isPaused: boolean;

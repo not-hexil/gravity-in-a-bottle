@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import MissionClientShell from '@/components/missions/MissionClientShell';
-import { MissionSlug } from '@/types/game';
+import { MissionSlug } from '@/lib/game';
 
 export function generateStaticParams() {
   return [

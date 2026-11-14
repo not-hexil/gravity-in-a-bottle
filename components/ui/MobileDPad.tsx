@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { playMechKeyPress, playMechKeyRelease } from '@/utils/soundEffects';
+import { playMechKeyPress, playMechKeyRelease } from '@/lib/soundEffects';
 
 interface MobileDPadProps {
   actionLabel: string;

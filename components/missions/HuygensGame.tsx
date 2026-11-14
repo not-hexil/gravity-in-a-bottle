@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { MissionModalData } from '@/types/game';
+import { MissionModalData } from '@/lib/game';
 import TelemetryUnlockOverlay from '@/components/ui/TelemetryUnlockOverlay';
 import {
   playThrusterBurst,
@@ -12,7 +12,7 @@ import {
   playCrashExplosion,
   playCapabilityUnlockChime,
   playMissionCompleteFanfare,
-} from '@/utils/soundEffects';
+} from '@/lib/soundEffects';
 
 interface HuygensGameProps {
   isPaused: boolean;

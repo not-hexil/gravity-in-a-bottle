@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { MissionSlug, PlanetSlug } from '@/types/game';
-import { playRandomSpaceBeep, playMissionLockSound } from '@/utils/soundEffects';
+import { MissionSlug, PlanetSlug } from '@/lib/game';
+import { playRandomSpaceBeep, playMissionLockSound } from '@/lib/soundEffects';
 
 interface CelestialBody {
   id: PlanetSlug;

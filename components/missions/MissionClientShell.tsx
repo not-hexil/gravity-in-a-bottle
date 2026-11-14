@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { MISSION_MODALS, MISSION_INSTRUCTIONS } from '@/data/missions';
-import { MissionSlug } from '@/types/game';
-import { playMechKeyPress, playMechKeyRelease } from '@/utils/soundEffects';
+import { MISSION_MODALS, MISSION_INSTRUCTIONS } from '@/lib/missions';
+import { MissionSlug } from '@/lib/game';
+import { playMechKeyPress, playMechKeyRelease } from '@/lib/soundEffects';
 import MissionModal from '@/components/ui/MissionModal';
 import InstructionModal from '@/components/ui/InstructionModal';
 import MobileDPad from '@/components/ui/MobileDPad';

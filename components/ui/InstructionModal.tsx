@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { MissionInstructionData } from '@/types/game';
+import { MissionInstructionData } from '@/lib/game';
 
 interface InstructionModalProps {
   isOpen: boolean;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MissionModalData } from '@/types/game';
+import { MissionModalData } from '@/lib/game';
 import TelemetryUnlockOverlay from '@/components/ui/TelemetryUnlockOverlay';
 import {
   playTelemetryDataTick,
@@ -12,7 +12,7 @@ import {
   playMissionCompleteFanfare,
   playCrashExplosion,
   playThrusterBurst,
-} from '@/utils/soundEffects';
+} from '@/lib/soundEffects';
 
 interface GalileoGameProps {
   isPaused: boolean;

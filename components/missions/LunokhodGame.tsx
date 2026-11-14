@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MissionModalData } from '@/types/game';
+import { MissionModalData } from '@/lib/game';
 import TelemetryUnlockOverlay from '@/components/ui/TelemetryUnlockOverlay';
 import {
   playWaypointPing,
@@ -11,7 +11,7 @@ import {
   playCapabilityUnlockChime,
   playMissionCompleteFanfare,
   playCrashExplosion,
-} from '@/utils/soundEffects';
+} from '@/lib/soundEffects';
 
 interface LunokhodGameProps {
   isPaused: boolean;

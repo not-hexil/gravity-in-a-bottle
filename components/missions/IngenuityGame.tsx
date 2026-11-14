@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MissionModalData } from '@/types/game';
+import { MissionModalData } from '@/lib/game';
 import TelemetryUnlockOverlay from '@/components/ui/TelemetryUnlockOverlay';
 import {
   playRotorPulse,
@@ -10,7 +10,7 @@ import {
   playCrashExplosion,
   playCapabilityUnlockChime,
   playMissionCompleteFanfare,
-} from '@/utils/soundEffects';
+} from '@/lib/soundEffects';
 
 interface IngenuityGameProps {
   isPaused: boolean;

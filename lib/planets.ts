@@ -1,4 +1,4 @@
-import { PlanetSlug, PlanetDossierData } from '@/types/game';
+import { PlanetSlug, PlanetDossierData } from '@/lib/game';
 
 export const PLANET_DOSSIERS: Record<PlanetSlug, PlanetDossierData> = {
   mercury: {

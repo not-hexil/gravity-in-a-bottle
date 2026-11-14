@@ -1,4 +1,4 @@
-import { MissionSlug, MissionModalData, MissionInstructionData } from '@/types/game';
+import { MissionSlug, MissionModalData, MissionInstructionData } from '@/lib/game';
 
 export const MISSION_MODALS: Record<MissionSlug, MissionModalData> = {
   huygens: {

@@ -6,7 +6,7 @@ import {
   PlanetDossierData,
   PlanetInfoBlock,
   PlanetMinigameOption,
-} from '@/types/game';
+} from '@/lib/game';
 
 interface PlanetDossierClientProps {
   planet: PlanetDossierData;

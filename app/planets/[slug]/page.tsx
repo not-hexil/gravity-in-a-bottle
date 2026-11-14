@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { PLANET_DOSSIERS, resolvePlanetSlug } from '@/data/planets';
+import { PLANET_DOSSIERS, resolvePlanetSlug } from '@/lib/planets';
 import PlanetDossierClient from '@/components/planets/PlanetDossierClient';
 
 export function generateStaticParams() {
