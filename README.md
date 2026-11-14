@@ -1,9 +1,9 @@
-# 🛰️ Gravity in the House: What We Left Behind
+# 🛰️ Gravity in a bottle
 
 *An interactive planetary exploration and space-archaeology experience tracing the robotic pioneers humanity left across the Solar System.*
 
 ## 🚀 Project Overview
-**Gravity in the House** is an interactive digital archive and arcade simulation experience centered on the landers, rovers, helicopters, and atmospheric probes humanity has sent to other worlds—and left behind on their surfaces, in their clouds, and inside their impact craters. Viewed through a retro-futuristic orbital telemetry monitor, explorers inspect real planetary environments, unlock archival mission logs, and pilot multi-stage hardware simulations across the Solar System.
+**Gravity in the House** is an interactive digital archive and arcade simulation experience centered on the landers, rovers, helicopters, and atmospheric probes humanity has sent to other worlds, and left behind on their surfaces, in their clouds, and inside their impact craters. Viewed through a retro-futuristic orbital telemetry monitor, explorers inspect real planetary environments, unlock archival mission logs, and pilot multi-stage hardware simulations across the Solar System to find clues to find their way back home.
 
 Built with verified mission telemetry and historical records from NASA, ESA, and Soviet planetary programs, the experience blends accessible science communication with hands-on mechanical and atmospheric gameplay.
 
@@ -12,15 +12,15 @@ Built with verified mission telemetry and historical records from NASA, ESA, and
 ## 🧩 Structure of the Experience
 The journey is organized around an interactive Solar System telemetry monitor and planetary archive dossiers:
 
-1. **The Orbital Monitor (Orrery Navigation)**: Track real-time planetary orbits through a CRT telemetry HUD where pulsing beacons highlight unexplored worlds with active field simulations.
+1. **The Orbital Monitor (Orrery Navigation)**: Track planetary orbits through a CRT telemetry HUD where pulsing beacons highlight unexplored worlds with active field simulations.
 2. **Planetary Environment & Relic Dossiers**: Scroll-driven, content-adaptive logbooks detailing each world's geology, atmosphere, and the exact human hardware resting there today.
 3. **Field Simulations (7 Multi-Stage Missions)**:
-   - **Mercury — MESSENGER**: Shield electronics behind a ceramic sunshade in 430 °C glare, scan shadowed polar ice craters, and execute its 2015 Shakespeare Crater impact.
-   - **Venus — Venera 13**: Drill volcanic basalt on Phoebe Regio, seal 92-bar pyrotechnic airlocks, and tune an X-ray fluorescence spectrometer before internal heat reaches 465 °C.
-   - **The Moon — Lunokhod 1 & Surveyor 3**: Traverse Mare Imbrium with an 8-wheeled solar rover and excavate Oceanus Procellarum regolith ahead of the Apollo 12 rendezvous.
-   - **Mars — Ingenuity**: Pilot counter-rotating carbon-fiber rotors through shifting Jezero Crater winds across 3 aerial scouting campaigns.
-   - **Jupiter — Galileo Atmospheric Probe**: Survive 22-bar crushing pressure and super-bolt lightning while tuning carrier frequencies to relay gas-giant telemetry.
-   - **Saturn & Titan — Huygens Lander**: Plunge through Titan's orange methane haze, deploy parachutes below 130 km, and touch down on Xanadu.
+   - **Mercury | MESSENGER**: Shield electronics behind a ceramic sunshade in 430 °C glare, scan shadowed polar ice craters, and execute its 2015 Shakespeare Crater impact.
+   - **Venus | Venera 13**: Drill volcanic basalt on Phoebe Regio, seal 92-bar pyrotechnic airlocks, and tune an X-ray fluorescence spectrometer before internal heat reaches 465 °C.
+   - **The Moon | Lunokhod 1 & Surveyor 3**: Traverse Mare Imbrium with an 8-wheeled solar rover and excavate Oceanus Procellarum regolith ahead of the Apollo 12 rendezvous.
+   - **Mars | Ingenuity**: Pilot counter-rotating carbon-fiber rotors through shifting Jezero Crater winds across 3 aerial scouting campaigns.
+   - **Jupiter | Galileo Atmospheric Probe**: Survive 22-bar crushing pressure and super-bolt lightning while tuning carrier frequencies to relay gas-giant telemetry.
+   - **Saturn & Titan | Huygens Lander**: Plunge through Titan's orange methane haze, deploy parachutes below 130 km, and touch down on Xanadu.
 4. **Home Is Calling (Earth Orbital Link)**: Completing at least four deep-space missions unlocks Earth's orbital station beacon for humanity's return telemetry link.
 
 ---

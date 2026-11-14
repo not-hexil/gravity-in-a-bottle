@@ -169,7 +169,11 @@ interface HitTarget {
   simulationCountLabel?: string;
 }
 
-export default function SolarSystemMap() {
+interface SolarSystemMapProps {
+  onTriggerEnding?: () => void;
+}
+
+export default function SolarSystemMap({ onTriggerEnding }: SolarSystemMapProps) {
   const router = useRouter();
   const pathname = usePathname();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -233,6 +237,14 @@ export default function SolarSystemMap() {
 
   const openPlanetDossier = (planetSlug: PlanetSlug, label: string) => {
     if (openingDossier) return;
+
+    // Trigger S4 Ending when Earth is clicked after >= 4 completed missions
+    if (planetSlug === 'earth' && completedRef.current.length >= 4 && onTriggerEnding) {
+      playMissionLockSound();
+      onTriggerEnding();
+      return;
+    }
+
     playMissionLockSound();
     setLaunchState({ label, fromPath: pathname });
     launchTimeoutRef.current = setTimeout(() => {
@@ -639,7 +651,9 @@ export default function SolarSystemMap() {
             <p className="font-bold text-white">{hoveredTarget.name.toUpperCase()}</p>
             {hoveredTarget.planetSlug ? (
               <p className="text-amber-400">
-                {'▶ CLICK TO OPEN ARCHIVE'}
+                {hoveredTarget.planetSlug === 'earth' && completedSlugs.length >= 4
+                  ? '▶ CLICK TO TRANSMIT MESSAGE HOME'
+                  : '▶ CLICK TO OPEN ARCHIVE'}
                 {hoveredTarget.simulationCountLabel
                   ? ` • ${hoveredTarget.simulationCountLabel}`
                   : ''}
