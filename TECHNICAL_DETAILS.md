@@ -1,4 +1,4 @@
-# 🛰️ GRAVITY IN A BOTTLE — Odyssey-6 Archive Terminal
+# GRAVITY IN A BOTTLE — Odyssey-6 Archive Terminal
 
 > **NASA Space Apps Challenge 2026** • *Team Gravity in Space*  
 > *"We’ve always been listening."*
@@ -7,7 +7,7 @@
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
 1. [Overview & Narrative Premise](#-overview--narrative-premise)
 2. [Key Features](#-key-features)
@@ -21,7 +21,7 @@
 
 ---
 
-## 🌌 Overview & Narrative Premise
+## Overview & Narrative Premise
 
 Nineteen days into deep-space transit, **Odyssey-6** loses all communication with Earth. Cut off from Mission Control, the six-person crew turns to the ship's onboard **Archive Terminal**—studying how humanity's historic robotic emissaries survived crushing pressures, extreme temperatures, and vast radio delays across the Solar System to reverse-engineer a way to bring their own backup dish online.
 
@@ -34,7 +34,7 @@ Players progress through:
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 * **Interactive Solar System Orrery & Dossiers:** Explore 10 celestial bodies—including untouched flyby-only ice giants (Uranus and Neptune) alongside worlds hosting permanent human hardware.
 * **7 Multi-Stage Historical Simulations:** Each simulation features 3 distinct stages modeled after real mission physics, controls, and failure conditions.
@@ -46,7 +46,7 @@ Players progress through:
 
 ---
 
-## 🚀 Playable Historical Missions
+## Playable Historical Missions
 
 | Mission | Celestial Body | Year | Core Gameplay & Physics Mechanics |
 | :--- | :--- | :--- | :--- |
@@ -60,7 +60,7 @@ Players progress through:
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## Tech Stack & Architecture
 
 * **Framework:** Next.js (App Router) & React
 * **Language:** TypeScript (`.ts` / `.tsx`)
@@ -71,42 +71,85 @@ Players progress through:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
-├── app/
+.
+├── app/                                # Next.js App Router pages & API endpoints
 │   ├── api/
 │   │   └── archive-bot/
-│   │       └── route.ts            # Gemini API serverless endpoint (domain-locked Q&A)
+│   │       └── route.ts                # AI Archive Bot API route handler
+│   ├── missions/
+│   │   └── [slug]/
+│   │       └── page.tsx                # Dynamic route for individual space missions
 │   ├── planets/
 │   │   └── [slug]/
-│   │       └── page.tsx            # Dynamic planet dossier route
-│   ├── layout.tsx                  # Root layout & metadata
-│   └── page.tsx                    # Main state router (S0 Lore → S1 Deck → S2 Radar → S4/S5 Finale)
-├── components/
+│   │       └── page.tsx                # Dynamic route for planetary dossiers
+│   ├── globals.css                     # Global Tailwind & custom retro styling
+│   ├── layout.tsx                      # Root layout, fonts, and metadata
+│   └── page.tsx                        # Main landing / interactive map entry page
+├── components/                         # Reusable React UI & game components
 │   ├── map/
-│   │   └── SolarSystemMap.tsx      # Interactive Solar System orrery & Earth unlock trigger
+│   │   └── SolarSystemMap.tsx          # Interactive solar system navigation map
+│   ├── missions/                       # Playable mini-games for each space probe
+│   │   ├── GalileoGame.tsx             # Galileo Jupiter atmospheric probe game
+│   │   ├── HuygensGame.tsx             # Huygens Titan landing game
+│   │   ├── IngenuityGame.tsx           # Ingenuity Mars helicopter flight game
+│   │   ├── LunokhodGame.tsx            # Soviet Lunokhod lunar rover game
+│   │   ├── MessengerGame.tsx           # MESSENGER Mercury orbital/surface game
+│   │   ├── MissionClientShell.tsx      # Shared wrapper, HUD, and state for missions
+│   │   ├── Surveyor3Game.tsx           # Surveyor 3 lunar lander game
+│   │   └── Venera13Game.tsx            # Venera 13 Venus lander game
 │   ├── planets/
-│   │   └── PlanetDossierClient.tsx # Planet telemetry, artifacts, simulations & unlocked carousels
-│   ├── story/
-│   │   ├── StoryDialogueBox.tsx    # Pixel-art RPG dialogue box with portrait frame & typewriter FX
-│   │   └── StoryScene.tsx          # Scenes 0, 1, 4, and 5 with responsive crew positioning
-│   └── ui/
-│       └── ArchiveBotWidget.tsx    # Collapsible Odyssey-6 Archive AI chat terminal
-├── data/
-│   └── planets.ts                  # Planetary profiles, quick facts, and "What We Left Behind" entries
-├── lib/
-│   ├── game.ts                     # TypeScript interfaces, progress store & localStorage sync
-│   ├── missions.ts                 # Mission briefings, controls, tips & post-mission stage imagery
-│   ├── retroAudio.ts               # Procedural Web Audio API 8-bit sound synthesizer
-│   └── storyData.ts                # Crew roster, dialogue scripts, lore lines & credits
-└── public/
-    └── assets/                     # Pixel-art backgrounds, logos, crew sprites & mugshots
+│   │   └── PlanetDossierClient.tsx     # Interactive planetary data & lore viewer
+│   ├── story/                          # Narrative dialogue & cutscenes
+│   │   ├── StoryDialogueBox.tsx        # Typewriter dialogue box & character mugshots
+│   │   └── StoryScene.tsx              # Scene renderer & background controller
+│   └── ui/                             # Shared interface overlays & controls
+│       ├── ArchiveBotWidget.tsx        # Floating AI assistant chat widget
+│       ├── InstructionModal.tsx        # How-to-play & mission briefing modal
+│       ├── MissionModal.tsx            # Mission selection & status modal
+│       ├── MobileDPad.tsx              # On-screen touch controls for mobile devices
+│       ├── ScrollRevealBox.tsx         # Scroll-triggered animation wrapper
+│       ├── StageImageCarousel.tsx      # Image gallery for mission/planet stages
+│       └── TelemetryUnlockOverlay.tsx  # Achievement / data unlock notification
+├── lib/                                # Core logic, static datasets, & audio engines
+│   ├── bgMusic.ts                      # Background music playlist & track manager
+│   ├── game.ts                         # Shared game loop, physics, & scoring helpers
+│   ├── missions.ts                     # Mission metadata, objectives, & configs
+│   ├── planets.ts                      # Planetary facts, stats, & lore entries
+│   ├── retroAudio.ts                   # Web Audio API chiptune synthesizer
+│   ├── soundEffects.ts                 # UI & gameplay SFX triggers
+│   └── storyData.ts                    # Scripted dialogue trees & scene triggers
+├── public/                             # Static assets served directly at root
+│   └── assets/
+│       ├── mugshots/                   # Character dialogue portraits (c1–c6)
+│       ├── music/                      # Scene & HUD soundtrack files (s0–s5, hud)
+│       ├── sprites/                    # Character & game sprites (c1–c6)
+│       ├── crew_deck.png               # Ship bridge / crew deck background
+│       ├── ending_bg.jpg               # Ending sequence background
+│       ├── lore_bg.png                 # Lore archive background
+│       ├── team_logo.png               # Team emblem
+│       └── title.png                   # Main title screen graphic
+├── AGENTS.md                           # AI agent instructions & repo conventions
+├── eslint.config.mjs                   # ESLint configuration
+├── IMAGE_RESOURCES.md                  # Image credits & source attributions
+├── LICENSE                             # Project open-source license
+├── next-env.d.ts                       # Next.js TypeScript environment declarations
+├── next.config.ts                      # Next.js framework configuration
+├── package.json                        # Project dependencies & build scripts
+├── pnpm-lock.yaml                      # Exact dependency lockfile
+├── pnpm-workspace.yaml                 # pnpm workspace configuration
+├── PROJECT_OVERVIEW.md                 # High-level project summary & goals
+├── README.md                           # Repository setup & documentation
+├── RESOURCES.md                        # External NASA & music source attributions
+├── TECHNICAL_DETAILS.md                # Architecture & implementation notes
+└── tsconfig.json                       # TypeScript compiler configuration
 ```
 
 ---
 
-## 💻 Getting Started (Local Setup)
+## Getting Started (Local Setup)
 
 ### Prerequisites
 * **Node.js** 18.18+ or 20+
@@ -117,13 +160,13 @@ Players progress through:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/<your-username>/<your-repo-name>.git
+   git clone https://github.com/not-hexil/gravity-in-a-bottle.git
    cd <your-repo-name>
    ```
 
 2. **Install dependencies:**
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Configure environment variables:**
@@ -134,31 +177,15 @@ Players progress through:
 
 4. **Run the development server:**
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 5. Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
 ---
 
-## 🔐 Environment Variables
+## Environment Variables
 
 | Variable | Required | Description |
 | :--- | :--- | :--- |
 | `GEMINI_API_KEY` | **Yes** | Server-side API key used by `app/api/archive-bot/route.ts` to power the Odyssey-6 Archive Q&A bot. Never exposed to the client browser. |
-
----
-
-## ☁️ Deployment (Vercel)
-
-1. Push your repository to GitHub.
-2. Import the project into **[Vercel](https://vercel.com/)**.
-3. In **Project Settings → Environment Variables**, add `GEMINI_API_KEY` with your Gemini API key.
-4. Click **Deploy**. Vercel automatically builds the Next.js frontend and deploys `/api/archive-bot` as a serverless function.
-
----
-
-## 🛰️ Credits & Data Sources
-
-* **Developed by:** Team Gravity in Space — *NASA Space Apps Challenge 2026*
-* **Scientific & Archival Imagery:** NASA Science, NASA/JPL-Caltech, ESA/NASA Cassini–Huygens Archive, Lunar Reconnaissance Orbiter Camera (LROC), and Wikimedia Commons public-domain spaceflight archives.
