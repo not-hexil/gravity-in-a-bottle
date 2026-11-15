@@ -24,6 +24,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="preload" as="image" href="/assets/lore_bg.png" />
+        <link rel="preload" as="image" href="/assets/ending_bg.png" />
+        <link rel="preload" as="image" href="/assets/team_logo.png" />
+        <link rel="preload" as="image" href="/assets/crew_deck.png" />
+        <link rel="preload" as="image" href="/assets/title.png" />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
