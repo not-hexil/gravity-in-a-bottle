@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import SolarSystemMap from '@/components/map/SolarSystemMap';
 import {
   Scene0LoreIntro,
   Scene1CrewDeck,
   Scene4Ending,
   Scene5Credits,
-  AssetOverrides
+  AssetOverrides,
 } from '@/components/story/StoryScene';
+import { bgMusic } from '@/lib/bgMusic';
 
 type SceneState = 'S0' | 'S1' | 'S2_RADAR' | 'S4' | 'S5';
 
@@ -41,12 +42,34 @@ export default function HomePage() {
   );
 
   const [overrideScene, setOverrideScene] = useState<SceneState | null>(null);
+  const [musicMuted, setMusicMuted] = useState(false);
 
-  if (introSeen === null) {
+  const scene: SceneState | null =
+    introSeen === null ? null : (overrideScene ?? (introSeen ? 'S2_RADAR' : 'S0'));
+
+  useEffect(() => {
+    if (!scene) return;
+
+    bgMusic.playScene(scene);
+
+    // Retry playback on first click or keypress
+    const resumeOnGesture = () => bgMusic.playScene(scene);
+    window.addEventListener('pointerdown', resumeOnGesture, { once: true });
+    window.addEventListener('keydown', resumeOnGesture, { once: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', resumeOnGesture);
+      window.removeEventListener('keydown', resumeOnGesture);
+    };
+  }, [scene]);
+
+  useEffect(() => {
+    return () => bgMusic.stop();
+  }, []);
+
+  if (scene === null) {
     return <main className="min-h-screen bg-slate-950" />;
   }
-
-  const scene: SceneState = overrideScene ?? (introSeen ? 'S2_RADAR' : 'S0');
 
   const enterRadar = () => {
     window.sessionStorage.setItem(INTRO_SEEN_KEY, 'true');
@@ -54,7 +77,16 @@ export default function HomePage() {
     setOverrideScene('S2_RADAR');
   };
 
+  const toggleMute = () => {
+    const next = !musicMuted;
+    setMusicMuted(next);
+    bgMusic.setMuted(next);
+  };
+
   const storyAssets: AssetOverrides = {
+    logoUrl: '/assets/team_logo.png',
+    creditsLogo1Url: '/assets/team_logo.png',
+    creditsLogo2Url: '/assets/title.png',
     getPortraitUrl: (speaker: number) => `/assets/mugshots/c${speaker}.png`,
     loreBg: '/assets/lore_bg.png',
     crewDeckBg: '/assets/crew_deck.png',
@@ -64,6 +96,13 @@ export default function HomePage() {
 
   return (
     <div className="relative min-h-screen bg-slate-950">
+      <button
+        onClick={toggleMute}
+        className="fixed top-2 left-2 z-50 rounded border border-slate-700 bg-slate-950/90 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider text-amber-300 opacity-80 hover:opacity-100 cursor-pointer"
+      >
+        {musicMuted ? '🔇 BGM: OFF' : '🎵 BGM: ON'}
+      </button>
+
       <div className="fixed top-2 right-2 z-50 flex gap-1 rounded border border-slate-700 bg-slate-950/90 p-1 font-mono text-[10px] text-slate-300 opacity-60 hover:opacity-100">
         {(['S0', 'S1', 'S2_RADAR', 'S4', 'S5'] as SceneState[]).map((s) => (
           <button
@@ -111,6 +150,7 @@ export default function HomePage() {
 
       {scene === 'S5' && (
         <Scene5Credits
+          assets={storyAssets}
           onRestart={() => {
             window.sessionStorage.removeItem(INTRO_SEEN_KEY);
             window.dispatchEvent(new Event(INTRO_EVENT));

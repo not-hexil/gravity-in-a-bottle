@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { MissionModalData } from '@/lib/game';
+import { MissionModalData, StageImageSlide } from '@/lib/game';
+import StageImageCarousel from '@/components/ui/StageImageCarousel';
 
 interface MissionModalProps {
   isOpen: boolean;
@@ -26,6 +27,13 @@ export default function MissionModal({
   }, [isOpen, onClose]);
 
   if (!isOpen || !data) return null;
+
+  const slides: StageImageSlide[] =
+    data.stageImages && data.stageImages.length > 0
+      ? data.stageImages
+      : data.imageUrl
+        ? [{ imageUrl: data.imageUrl, imageCaption: data.imageCaption }]
+        : [];
 
   return (
     <div
@@ -58,19 +66,16 @@ export default function MissionModal({
           </button>
         </div>
 
-        {data.imageUrl && (
-          <figure className="mt-4 overflow-hidden rounded-lg border border-slate-700 bg-slate-950">
-            <img
-              src={data.imageUrl}
-              alt={data.imageCaption || data.title}
-              className="h-48 w-full object-cover"
+        {slides.length > 0 && (
+          <div className="mt-4">
+            <StageImageCarousel
+              key={`modal-carousel-${data.slug}`}
+              slides={slides}
+              initialIndex={0}
+              heightClass="h-52"
+              fallbackAlt={data.title}
             />
-            {data.imageCaption && (
-              <figcaption className="px-3 py-1.5 font-mono text-[11px] text-slate-400">
-                {data.imageCaption}
-              </figcaption>
-            )}
-          </figure>
+          </div>
         )}
 
         {/* Key Stats Bar */}

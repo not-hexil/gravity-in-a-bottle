@@ -18,19 +18,24 @@ export type PlanetSlug =
   | 'titan'
   | 'uranus'
   | 'neptune';
+  export interface StageImageSlide {
+    imageUrl: string;
+    imageCaption?: string;
+  }
 
-export interface MissionModalData {
-  slug: MissionSlug;
-  title: string;
-  subtitle: string;
-  paragraphs: [string, string, string];
-  imageUrl?: string;
-  imageCaption?: string;
-  stats: {
-    label: string;
-    value: string;
-  }[];
-}
+  export interface MissionModalData {
+    slug: MissionSlug;
+    title: string;
+    subtitle: string;
+    paragraphs: [string, string, string];
+    imageUrl?: string;
+    imageCaption?: string;
+    stageImages?: [StageImageSlide, StageImageSlide, StageImageSlide];
+    stats: {
+      label: string;
+      value: string;
+    }[];
+  }
 
 export interface MissionInstructionData {
   slug: MissionSlug;
@@ -62,6 +67,7 @@ export interface PlanetMinigameOption {
   missionSlug: MissionSlug | null;
   unlockedLoreTitle: string;
   unlockedLoreParagraphs: string[];
+  stageImages?: [StageImageSlide, StageImageSlide, StageImageSlide];
 }
 
 export interface PlanetDossierData {

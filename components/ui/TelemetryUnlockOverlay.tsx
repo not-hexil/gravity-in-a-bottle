@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { StageImageSlide } from '@/lib/game';
+import StageImageCarousel from '@/components/ui/StageImageCarousel';
 
 interface TelemetryUnlockOverlayProps {
   isOpen: boolean;
   stageCompleted: number;
   totalStages: number;
   unlockedParagraphs: string[];
+  stageImages?: StageImageSlide[];
   imageUrl?: string;
   imageCaption?: string;
   unlockedCapabilityName: string;
@@ -19,6 +22,7 @@ export default function TelemetryUnlockOverlay({
   stageCompleted,
   totalStages,
   unlockedParagraphs,
+  stageImages,
   imageUrl,
   imageCaption,
   unlockedCapabilityName,
@@ -40,6 +44,14 @@ export default function TelemetryUnlockOverlay({
 
   if (!isOpen) return null;
 
+  // Build unlocked stage slides up to stageCompleted (fallback to single imageUrl if stageImages not set)
+  const unlockedSlides: StageImageSlide[] =
+    stageImages && stageImages.length > 0
+      ? stageImages.slice(0, stageCompleted)
+      : imageUrl
+        ? [{ imageUrl, imageCaption }]
+        : [];
+
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/92 p-4 backdrop-blur-xs">
       <div className="max-h-[92%] w-full max-w-lg overflow-y-auto rounded-xl border-2 border-amber-500/70 bg-slate-900 p-5 text-left shadow-2xl">
@@ -52,19 +64,15 @@ export default function TelemetryUnlockOverlay({
           </span>
         </div>
 
-        {imageUrl && (
-          <figure className="mt-3 overflow-hidden rounded-lg border border-slate-700 bg-slate-950">
-            <img
-              src={imageUrl}
-              alt={imageCaption || 'Mission telemetry archive'}
-              className="h-32 w-full object-cover"
+        {unlockedSlides.length > 0 && (
+          <div className="mt-3">
+            <StageImageCarousel
+              key={`overlay-carousel-${stageCompleted}`}
+              slides={unlockedSlides}
+              initialIndex={unlockedSlides.length - 1}
+              heightClass="h-36"
             />
-            {imageCaption && (
-              <figcaption className="px-3 py-1 font-mono text-[10px] text-slate-400">
-                {imageCaption}
-              </figcaption>
-            )}
-          </figure>
+          </div>
         )}
 
         <div className="mt-3 space-y-2.5">

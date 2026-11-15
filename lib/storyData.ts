@@ -34,8 +34,12 @@ export const S0_LORE_LINES = [
   'Then the signal died.',
   'No NASA. No maps. No voice from Earth.',
   'Only one thing still worked: an old archive of machines humanity left behind.',
-  'Rovers. Landers. Probes. Some went silent. Some are still travelling.',
+  'Rovers. Landers. Probes.',
+  'Some went silent.',
+  'Some are still travelling.',
   'Left behind. Never forgotten.',
+  'Drifting in the dark, like letters cast into a cosmic sea...',
+  'GRAVITY IN A BOTTLE',
 ];
 
 // S1
@@ -61,22 +65,18 @@ export const S4_DIALOGUE: DialogueLine[] = [
   { id: 'E1', speaker: 6, mood: 'sad', text: 'Every one of them went quiet. But somebody still wrote their story down.' },
   { id: 'E2', speaker: 4, mood: 'determined', text: "We're not lost. We're just quiet." },
   { id: 'E3', speaker: 3, mood: 'joking', text: "I can wire the backup dish to the archive's transmitter. Ten minutes." },
-  { id: 'E4', speaker: 1, mood: 'calm', text: 'Do it. Character 4, you write the message.' },
+  { id: 'E4', speaker: 1, mood: 'calm', text: 'Do it. Ummid, you write the message.' },
   { id: 'E5', speaker: 4, mood: 'determined', text: 'Like the Pioneer 10 plaque: who we are, and where we are.' },
   { id: 'E6', speaker: 5, mood: 'smile', text: 'Put the tomatoes in. Humanity should know.' },
   { id: 'E7', speaker: 2, mood: 'happy', text: 'Sending: SIX CREW. ALL ALIVE. WE ARE HERE.', sfx: 'pings_static' },
-  { id: 'E8', speaker: -1, mood: 'none', text: '...dyssey-6... this is Mission Control. We never stopped listening.', isCyanRadio: true },
-  { id: 'E9', speaker: 6, mood: 'happy', text: 'They remembered us.' },
-  { id: 'E10', speaker: 1, mood: 'calm', text: 'Abandoned... but not forgotten.' },
 ];
 
 // S5
 export const S5_CREDITS_BLOCKS = [
   { heading: 'GRAVITY IN A BOTTLE', body: 'A game by Team Gravity in Space\nNASA Space Apps Challenge 2026' },
-  { heading: 'STORY AND RESEARCH', body: 'NAMES PEOPLE NAMES, WRITE YOURS' },
-  { heading: 'DESIGN AND DEVELOPMENT', body: 'NAMES PEOPLE NAMES, WRITE YOURS' },
-  { heading: 'PIXEL ART', body: 'Made with generative AI from team photos and edited by the team' },
-  { heading: 'MUSIC AND SOUND', body: 'Chiptune Web Audio Engine' },
-  { heading: 'DATA SOURCES', body: 'NASA Science • NASA/JPL • NASA PDS • NASA NSSDCA • ESA' },
+  { heading: 'THE TEAM', body: 'Ashfia Ferdousi\nFahim Muntasir Galib\nHumayra Rahman\nAli Amena Ummid\nShadman Sajid\nZawad Hasan' },
+  { heading: 'ART', body: 'Made with generative AI, edited by the team' },
+  { heading: 'MUSIC AND SOUND', body: 'Chiptune Web Audio Engine • Eric Skiff' },
+  { heading: 'DATA SOURCES', body: 'NASA Science • NASA/JPL • NASA PDS • NASA NSSDCA • ESA • Wikipedia' },
   { heading: 'THANK YOU TO THE MACHINES', body: 'All the machines left behind, but not forgotten!' },
 ];

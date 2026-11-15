@@ -12,6 +12,10 @@ import { StoryDialogueBox } from './StoryDialogueBox';
 import { retroAudio } from '@/lib/retroAudio';
 
 export interface AssetOverrides {
+  logoUrl?: string;
+  titleImageUrl?: string;
+  creditsLogo1Url?: string;
+  creditsLogo2Url?: string;
   loreBg?: string;
   crewDeckBg?: string;
   endingBg?: string;
@@ -120,17 +124,39 @@ export const Scene0LoreIntro: React.FC<{
 
       <div className="relative z-10 max-w-3xl w-full text-center space-y-8">
         {phase === 'TITLE' && (
-          <div className="space-y-6">
-            <p className="text-xs md:text-sm text-sky-400 tracking-[0.25em] uppercase">
-              NASA Space Apps Challenge 2026 • Team Gravity in Space
+          <div>
+            <p className="relative z-10 text-xs md:text-sm text-sky-400 tracking-[0.25em] uppercase">
+              NASA Space Apps Challenge 2026
             </p>
-            <h1 className="text-3xl md:text-6xl font-extrabold tracking-wider text-amber-300 border-y-4 border-sky-400 py-6 shadow-[0_0_40px_rgba(56,189,248,0.2)]">
-              GRAVITY IN A BOTTLE
-            </h1>
-            <p className="text-sm md:text-base text-slate-300">
+
+            {/* Logo 2.5x Larger with Negative Vertical Margin for Overlap */}
+            <div className="relative z-0 -my-20 sm:-my-16 flex justify-center pointer-events-none">
+              <img
+                src={assets?.logoUrl || '/assets/logo.png'}
+                alt="Gravity in a Bottle Logo"
+                className="h-[25rem] w-[25rem] sm:h-[17.5rem] sm:w-[17.5rem] object-contain drop-shadow-[0_0_20px_rgba(56,189,248,0.45)]"
+                style={{ imageRendering: 'pixelated' }}
+              />
+            </div>
+
+            <p className="relative z-10 text-xs md:text-sm text-sky-400 tracking-[0.25em]">
+              presents
+            </p>
+
+            <div className="relative z-10 flex justify-center">
+              <h1 className="sr-only">GRAVITY IN A BOTTLE</h1>
+              <img
+                src={assets?.titleImageUrl || '/assets/title.png'}
+                alt="Gravity in a Bottle"
+                className="max-h-96 md:max-h-[33rem] w-auto object-contain drop-shadow-[0_0_25px_rgba(251,191,36,0.45)]"
+                style={{ imageRendering: 'pixelated' }}
+              />
+            </div>
+
+            <p className="relative z-10 mt-3 text-sm md:text-base text-slate-300">
               ODYSSEY-6 | ARCHIVE TERMINAL
             </p>
-            <p className="text-sm md:text-lg text-sky-300 animate-bounce pt-6 tracking-widest">
+            <p className="relative z-10 pt-6 text-sm md:text-lg text-sky-300 animate-bounce tracking-widest">
               [ PRESS ENTER TO INITIATE ]
             </p>
           </div>
@@ -252,7 +278,7 @@ export const Scene1CrewDeck: React.FC<{
   );
 };
 
-// Final Impact Overslay
+// Final Impact Overlay
 const FinalImpactOverlay: React.FC<{
   onViewCredits: () => void;
   onGoHome: () => void;
@@ -457,8 +483,12 @@ export const Scene4Ending: React.FC<{
 export const Scene5Credits: React.FC<{
   onRestart?: () => void;
   onGoHome?: () => void;
-}> = ({ onRestart, onGoHome }) => {
+  assets?: AssetOverrides;
+}> = ({ onRestart, onGoHome, assets }) => {
   const [showFinalCard, setShowFinalCard] = useState(false);
+
+  const logo1 = assets?.creditsLogo1Url || assets?.logoUrl || '/assets/logo.png';
+  const logo2 = assets?.creditsLogo2Url || '/assets/title.png';
 
   useEffect(() => {
     const timer = setTimeout(() => setShowFinalCard(true), 18000);
@@ -467,11 +497,27 @@ export const Scene5Credits: React.FC<{
 
   return (
     <div className="relative w-full h-screen bg-black text-white font-mono overflow-hidden flex flex-col items-center justify-center p-6 select-none">
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center gap-6 sm:gap-10 pointer-events-none">
+        <img
+          src={logo1}
+          alt="Team Logo"
+          className="h-44 w-44 sm:h-64 sm:w-64 object-contain drop-shadow-[0_0_16px_rgba(56,189,248,0.45)]"
+          style={{ imageRendering: 'pixelated' }}
+        />
+        <div className="h-32 w-px bg-slate-700" />
+        <img
+          src={logo2}
+          alt="Project Logo"
+          className="h-44 w-44 sm:h-64 sm:w-64 object-contain drop-shadow-[0_0_16px_rgba(250,204,21,0.45)]"
+          style={{ imageRendering: 'pixelated' }}
+        />
+      </div>
+
       {!showFinalCard ? (
         <>
           <style>{`
             @keyframes pixelScroll {
-              0% { transform: translateY(70vh); }
+              0% { transform: translateY(75vh); }
               100% { transform: translateY(-110%); }
             }
             .animate-credits {
@@ -479,30 +525,41 @@ export const Scene5Credits: React.FC<{
             }
           `}</style>
 
-          <div className="animate-credits max-w-xl w-full text-center space-y-12">
-            {S5_CREDITS_BLOCKS.map((block, idx) => (
-              <div key={idx} className="space-y-2">
-                <h3 className="text-amber-300 text-sm md:text-base font-bold tracking-widest">
-                  {block.heading}
-                </h3>
-                <p className="text-slate-300 text-xs md:text-sm whitespace-pre-line leading-relaxed">
-                  {block.body}
-                </p>
-              </div>
-            ))}
+          {/* Masked Viewport */}
+          <div
+            className="relative z-10 w-full h-full flex justify-center overflow-hidden pointer-events-none"
+            style={{
+              WebkitMaskImage:
+                'linear-gradient(to bottom, transparent 0%, transparent 32%, black 46%, black 92%, transparent 100%)',
+              maskImage:
+                'linear-gradient(to bottom, transparent 0%, transparent 32%, black 46%, black 92%, transparent 100%)',
+            }}
+          >
+            <div className="animate-credits max-w-xl w-full text-center space-y-12">
+              {S5_CREDITS_BLOCKS.map((block, idx) => (
+                <div key={idx} className="space-y-2">
+                  <h3 className="text-amber-300 text-sm md:text-base font-bold tracking-widest">
+                    {block.heading}
+                  </h3>
+                  <p className="text-slate-300 text-xs md:text-sm whitespace-pre-line leading-relaxed">
+                    {block.body}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <button
             onClick={() => setShowFinalCard(true)}
-            className="absolute bottom-6 right-6 text-xs text-slate-500 hover:text-sky-400 cursor-pointer"
+            className="absolute bottom-6 right-6 z-30 text-xs text-slate-500 hover:text-sky-400 cursor-pointer"
           >
             SKIP CREDITS ▸
           </button>
         </>
       ) : (
-        <div className="text-center space-y-6">
+        <div className="relative z-20 text-center space-y-6 pt-44">
           <h2 className="text-2xl md:text-4xl font-bold tracking-widest text-sky-300 border-y-2 border-sky-500 py-4 px-6">
-            Abandoned but not Forgotten
+            GRAVITY IN A BOTTLE
           </h2>
           <p className="text-xs text-slate-400">
             Team Gravity in Space • NASA Space Apps Challenge 2026

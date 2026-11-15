@@ -8,6 +8,9 @@ import {
   PlanetMinigameOption,
 } from '@/lib/game';
 
+import StageImageCarousel from '@/components/ui/StageImageCarousel';
+import { MISSION_MODALS } from '@/lib/missions';
+
 interface PlanetDossierClientProps {
   planet: PlanetDossierData;
 }
@@ -534,25 +537,58 @@ export default function PlanetDossierClient({ planet }: PlanetDossierClientProps
               {'04 // UNLOCKED POST-SIMULATION TELEMETRY'}
             </h2>
 
-            <div className="space-y-4">
-              {unlockedGames.map((game) => (
-                <div
-                  key={`unlocked-${game.id}`}
-                  className="rounded-xl border-2 border-emerald-500/40 bg-slate-900/95 p-6 shadow-xl"
-                >
-                  <span className="inline-block rounded bg-emerald-500/20 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-emerald-300">
-                    {`★ DECODED FROM ${game.title}`}
-                  </span>
-                  <h3 className="mt-2 font-mono text-lg font-bold text-white">
-                    {game.unlockedLoreTitle}
-                  </h3>
-                  <div className="mt-3 space-y-2.5 text-sm leading-relaxed text-slate-200">
-                    {game.unlockedLoreParagraphs.map((para, i) => (
-                      <p key={i}>{para}</p>
-                    ))}
+            <div className="space-y-6">
+              {unlockedGames.map((game) => {
+                const missionModal = game.missionSlug
+                  ? MISSION_MODALS[game.missionSlug]
+                  : undefined;
+
+                const slides =
+                  game.stageImages && game.stageImages.length > 0
+                    ? game.stageImages
+                    : missionModal?.stageImages && missionModal.stageImages.length > 0
+                      ? missionModal.stageImages
+                      : missionModal?.imageUrl
+                        ? [
+                            {
+                              imageUrl: missionModal.imageUrl,
+                              imageCaption: missionModal.imageCaption,
+                            },
+                          ]
+                        : [];
+
+                return (
+                  <div
+                    key={`unlocked-${game.id}`}
+                    className="rounded-xl border-2 border-emerald-500/40 bg-slate-900/95 p-6 shadow-xl"
+                  >
+                    <span className="inline-block rounded bg-emerald-500/20 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-emerald-300">
+                      {`★ DECODED FROM ${game.title}`}
+                    </span>
+                    <h3 className="mt-2 font-mono text-lg font-bold text-white">
+                      {game.unlockedLoreTitle}
+                    </h3>
+
+                    {slides.length > 0 && (
+                      <div className="mt-4">
+                        <StageImageCarousel
+                          key={`dossier-carousel-${game.id}`}
+                          slides={slides}
+                          initialIndex={0}
+                          heightClass="max-h-[32rem] !object-contain"
+                          fallbackAlt={game.title}
+                        />
+                      </div>
+                    )}
+
+                    <div className="mt-4 space-y-2.5 text-sm leading-relaxed text-slate-200">
+                      {game.unlockedLoreParagraphs.map((para, i) => (
+                        <p key={i}>{para}</p>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         )}
