@@ -10,7 +10,7 @@ export interface CharacterConfig {
 
 export const CREW: Record<number, CharacterConfig> = {
   1: { id: 1, name: 'Ashfia', role: 'Captain', suitColor: '#1d4ed8', blipFreq: 220 },
-  2: { id: 2, name: 'Shadman', role: 'Science Officer', suitColor: '#15803d', blipFreq: 440 },
+  2: { id: 2, name: 'Shadman', role: 'Archivist', suitColor: '#15803d', blipFreq: 440 },
   3: { id: 3, name: 'Galib', role: 'Engineer', suitColor: '#c2410c', blipFreq: 165 },
   4: { id: 4, name: 'Ummid', role: 'Comms Officer', suitColor: '#7e22ce', blipFreq: 310 },
   5: { id: 5, name: 'Humayra', role: 'Medic & Gardener', suitColor: '#dc2626', blipFreq: 520 },
@@ -50,7 +50,7 @@ export const S1_DIALOGUE: DialogueLine[] = [
   { id: 'D4', speaker: 1, mood: 'calm', text: "We don't know that. We stay calm, and we stay busy." },
   { id: 'D5', speaker: 5, mood: 'smile', text: 'Busy is easy. Dinner is tomatoes. Again.' },
   { id: 'D6', speaker: 3, mood: 'joking', text: "Day nineteen of tomatoes. I'm turning red." },
-  { id: 'D7', speaker: 2, mood: 'surprised', text: 'Commander, the archive terminal just woke up on backup power.', sfx: 'boot' },
+  { id: 'D7', speaker: 2, mood: 'surprised', text: 'Captain, the archive terminal just woke up on backup power.', sfx: 'boot' },
   { id: 'D8', speaker: 1, mood: 'calm', text: "The old mission archive? That's all offline data." },
   { id: 'D9', speaker: 2, mood: 'neutral', text: "It's a record of hardware NASA left on the Moon, Mars, Jupiter and Saturn." },
   { id: 'D10', speaker: 6, mood: 'sad', text: 'Left behind. Great. Just like us.' },

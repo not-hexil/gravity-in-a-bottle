@@ -10,6 +10,7 @@ import {
   AssetOverrides,
 } from '@/components/story/StoryScene';
 import { bgMusic } from '@/lib/bgMusic';
+import ArchiveBotWidget from '@/components/ui/ArchiveBotWidget';
 
 type SceneState = 'S0' | 'S1' | 'S2_RADAR' | 'S4' | 'S5';
 
@@ -137,6 +138,7 @@ export default function HomePage() {
           </header>
 
           <SolarSystemMap onTriggerEnding={() => setOverrideScene('S4')} />
+          <ArchiveBotWidget />
         </main>
       )}
 

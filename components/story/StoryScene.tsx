@@ -23,13 +23,102 @@ export interface AssetOverrides {
   getPortraitUrl?: (speaker: number) => string | null;
 }
 
-const CREW_POSITIONS: Record<number, { x: number; y: number }> = {
-  1: { x: 850, y: 580 },
-  2: { x: 1100, y: 370 },
-  3: { x: 1150, y: 220 },
-  4: { x: 1250, y: 250 },
-  5: { x: 460, y: 260 },
-  6: { x: 900, y: 230 },
+type ScreenTier = 'mobile' | 'tablet' | 'desktop';
+
+interface CrewCoord {
+  x: string;
+  y: string;
+}
+
+const RESPONSIVE_CREW_POSITIONS: Record<ScreenTier, Record<number, CrewCoord>> = {
+  mobile: {
+    1: { x: '22%', y: '72%' },
+    2: { x: '78%', y: '70%' },
+    3: { x: '78%', y: '30%' },
+    4: { x: '52%', y: '34%' },
+    5: { x: '20%', y: '32%' },
+    6: { x: '50%', y: '76%' },
+  },
+  tablet: {
+    1: { x: '48%', y: '70%' },
+    2: { x: '78%', y: '42%' },
+    3: { x: '70%', y: '33%' },
+    4: { x: '90%', y: '38%' },
+    5: { x: '24%', y: '36%' },
+    6: { x: '56%', y: '34%' },
+  },
+  desktop: {
+    1: { x: '50%', y: '69%' },
+    2: { x: '62%', y: '38%' },
+    3: { x: '74%', y: '37%' },
+    4: { x: '84%', y: '45%' },
+    5: { x: '25%', y: '36%' },
+    6: { x: '54%', y: '28%' },
+  },
+};
+
+function useScreenTier(): ScreenTier {
+  const [tier, setTier] = useState<ScreenTier>('desktop');
+
+  useEffect(() => {
+    const updateTier = () => {
+      const w = window.innerWidth;
+      if (w < 640) {
+        setTier('mobile');
+      } else if (w < 1024) {
+        setTier('tablet');
+      } else {
+        setTier('desktop');
+      }
+    };
+
+    updateTier();
+    window.addEventListener('resize', updateTier);
+    return () => window.removeEventListener('resize', updateTier);
+  }, []);
+
+  return tier;
+}
+
+const CrewMemberSprite: React.FC<{
+  id: number;
+  name: string;
+  suitColor: string;
+  spriteUrl: string | null;
+  isSpeaking: boolean;
+  borderClass?: string;
+}> = ({
+  id,
+  name,
+  suitColor,
+  spriteUrl,
+  isSpeaking,
+  borderClass = 'border-slate-950',
+}) => {
+  const [failed, setFailed] = useState(false);
+
+  if (spriteUrl && !failed) {
+    return (
+      <img
+        src={spriteUrl}
+        alt={name}
+        onError={() => setFailed(true)}
+        className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 object-contain"
+        style={{ imageRendering: 'pixelated' }}
+      />
+    );
+  }
+
+  return (
+    <div
+      className={`w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 border-2 ${
+        isSpeaking ? 'border-white shadow-[0_0_12px_#fff]' : borderClass
+      } flex items-center justify-center text-xs sm:text-sm font-bold`}
+      style={{ backgroundColor: suitColor }}
+    >
+      C{id}
+    </div>
+  );
 };
 
 // Scene 0
@@ -242,8 +331,10 @@ export const Scene1CrewDeck: React.FC<{
 }> = ({ onComplete, assets }) => {
   const [index, setIndex] = useState(0);
   const [fadingOut, setFadingOut] = useState(false);
+  const screenTier = useScreenTier();
 
   const currentLine = S1_DIALOGUE[index];
+  const positions = RESPONSIVE_CREW_POSITIONS[screenTier];
 
   const handleNext = () => {
     if (index < S1_DIALOGUE.length - 1) {
@@ -279,37 +370,29 @@ export const Scene1CrewDeck: React.FC<{
         const member = CREW[id];
         const isSpeaking = currentLine.speaker === id;
         const spriteUrl = assets?.getSpriteUrl ? assets.getSpriteUrl(id) : null;
-        const pos = CREW_POSITIONS[id] || { x: 0, y: 0 };
+        const pos = positions[id] || { x: '50%', y: '50%' };
 
         return (
           <div
             key={id}
-            className={`absolute flex flex-col items-center transition-transform duration-200 ${
+            className={`absolute flex flex-col items-center transition-all duration-200 ${
               isSpeaking ? 'opacity-100 z-20' : 'opacity-85 z-10'
             }`}
             style={{
-              left: `${pos.x}px`,
-              top: `${pos.y}px`,
-              transform: isSpeaking ? 'scale(1.15)' : 'scale(1)',
+              left: pos.x,
+              top: pos.y,
+              transform: `translate(-50%, -50%) ${isSpeaking ? 'scale(1.15)' : 'scale(1)'}`,
             }}
           >
-            {spriteUrl ? (
-              <img
-                src={spriteUrl}
-                alt={member.name}
-                className="w-32 h-32 object-contain"
-              />
-            ) : (
-              <div
-                className={`w-24 h-24 border-2 ${
-                  isSpeaking ? 'border-white shadow-[0_0_12px_#fff]' : 'border-slate-950'
-                } flex items-center justify-center text-sm font-bold`}
-                style={{ backgroundColor: member.suitColor }}
-              >
-                C{id}
-              </div>
-            )}
-            <span className="mt-2 text-xs bg-black/75 px-2 py-0.5 rounded text-white">
+            <CrewMemberSprite
+              key={`${id}-${spriteUrl ?? 'fallback'}`}
+              id={id}
+              name={member.name}
+              suitColor={member.suitColor}
+              spriteUrl={spriteUrl}
+              isSpeaking={isSpeaking}
+            />
+            <span className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs bg-black/75 px-1.5 sm:px-2 py-0.5 rounded text-white whitespace-nowrap">
               {member.name}
             </span>
           </div>
@@ -417,9 +500,11 @@ export const Scene4Ending: React.FC<{
 }> = ({ onComplete, onGoHome, assets }) => {
   const [index, setIndex] = useState(0);
   const [showImpactFinale, setShowImpactFinale] = useState(false);
+  const screenTier = useScreenTier();
 
   const currentLine = S4_DIALOGUE[index];
   const showSignalShip = index >= 6;
+  const positions = RESPONSIVE_CREW_POSITIONS[screenTier];
 
   const handleNext = () => {
     if (currentLine.id === 'E7' || index >= S4_DIALOGUE.length - 1) {
@@ -460,35 +545,30 @@ export const Scene4Ending: React.FC<{
           const member = CREW[id];
           const isSpeaking = currentLine.speaker === id;
           const spriteUrl = assets?.getSpriteUrl ? assets.getSpriteUrl(id) : null;
-          const pos = CREW_POSITIONS[id] || { x: 0, y: 0 };
+          const pos = positions[id] || { x: '50%', y: '50%' };
 
           return (
             <div
               key={id}
-              className={`absolute flex flex-col items-center transition-transform duration-200 ${
+              className={`absolute flex flex-col items-center transition-all duration-200 ${
                 isSpeaking ? 'opacity-100 z-20' : 'opacity-85 z-10'
               }`}
               style={{
-                left: `${pos.x}px`,
-                top: `${pos.y}px`,
-                transform: isSpeaking ? 'scale(1.15)' : 'scale(1)',
+                left: pos.x,
+                top: pos.y,
+                transform: `translate(-50%, -50%) ${isSpeaking ? 'scale(1.15)' : 'scale(1)'}`,
               }}
             >
-              {spriteUrl ? (
-                <img
-                  src={spriteUrl}
-                  alt={member.name}
-                  className="w-32 h-32 object-contain"
-                />
-              ) : (
-                <div
-                  className="w-24 h-24 border-2 border-amber-200 flex items-center justify-center text-sm font-bold"
-                  style={{ backgroundColor: member.suitColor }}
-                >
-                  C{id}
-                </div>
-              )}
-              <span className="mt-2 text-xs bg-black/75 px-2 py-0.5 rounded text-white">
+              <CrewMemberSprite
+                key={`${id}-${spriteUrl ?? 'fallback'}`}
+                id={id}
+                name={member.name}
+                suitColor={member.suitColor}
+                spriteUrl={spriteUrl}
+                isSpeaking={isSpeaking}
+                borderClass="border-amber-200"
+              />
+              <span className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs bg-black/75 px-1.5 sm:px-2 py-0.5 rounded text-white whitespace-nowrap">
                 {member.name}
               </span>
             </div>
@@ -610,14 +690,14 @@ export const Scene5Credits: React.FC<{
           <h2 className="text-2xl md:text-4xl font-bold tracking-widest text-sky-300 border-y-2 border-sky-500 py-4 px-6">
             GRAVITY IN A BOTTLE
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-lg text-slate-400">
             Team Gravity in Space • NASA Space Apps Challenge 2026
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-1.5">
             {onGoHome && (
               <button
                 onClick={onGoHome}
-                className="px-4 py-2 border-2 border-emerald-400 text-emerald-300 hover:bg-emerald-400 hover:text-black text-xs tracking-widest transition-colors cursor-pointer"
+                className="px-4 py-2 border-2 border-emerald-400 text-emerald-300 hover:bg-emerald-400 hover:text-black text-s tracking-widest transition-colors cursor-pointer"
               >
                 RETURN TO MISSION CONTROL
               </button>
@@ -625,7 +705,7 @@ export const Scene5Credits: React.FC<{
             {onRestart && (
               <button
                 onClick={onRestart}
-                className="px-4 py-2 border-2 border-sky-400 text-sky-300 hover:bg-sky-400 hover:text-black text-xs tracking-widest transition-colors cursor-pointer"
+                className="px-4 py-2 border-2 border-sky-400 text-sky-300 hover:bg-sky-400 hover:text-black text-s tracking-widest transition-colors cursor-pointer"
               >
                 PLAY FROM TITLE
               </button>
