@@ -20,18 +20,25 @@ All `imageUrl` values extracted from `missions.ts` and `planets.ts`, grouped by 
 * `https://assets.science.nasa.gov/dynamicimage/assets/science/cds/general/images/2024/03/uranus-pia18182-16x9-1.jpg`
 * `https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/07/PIA00317_modest.jpg`
 
-## `science.nasa.gov` (8 unique URLs)
+## `science.nasa.gov` (9 unique URLs)
 * `https://science.nasa.gov/wp-content/uploads/2018/08/pia16481-titan-seasons.jpg`
 * `https://science.nasa.gov/wp-content/uploads/2024/03/anatomy-of-ingenuity-mars-helicopter.jpg`
 * `https://science.nasa.gov/wp-content/uploads/2024/03/pia24443-crop.jpg`
+* `https://science.nasa.gov/wp-content/uploads/2016/05/true-mercury-jpg.webp`
 * `https://science.nasa.gov/wp-content/uploads/2023/05/mercury-from-messenger-pia15160-1920x640-1.jpg`
-* `https://science.nasa.gov/wp-content/uploads/2023/05/earth-1-jpg.webp` *(listed twice in `planets.ts`)*
+* `https://science.nasa.gov/wp-content/uploads/2023/05/earth-1-jpg.webp`
 * `https://science.nasa.gov/wp-content/uploads/2024/03/jupiter-marble-pia22946-16x9-1.jpg?resize=1200,675`
 * `https://science.nasa.gov/wp-content/uploads/2024/03/saturn-farewell-pia21345.jpg`
 * `https://science.nasa.gov/wp-content/uploads/2024/03/pia01492-neptune-full-disk-16x9-1.jpg`
 
-## `www.nasa.gov` (1 unique URL)
-* `https://www.nasa.gov/wp-content/uploads/2023/03/545754main_pia08427-full_full.jpg` *(listed twice in `planets.ts`)*
+## `www.nasa.gov` (3 unique URLs)
+* `https://www.nasa.gov/wp-content/uploads/2015/06/edu_solar_panel_large.jpg`
+* `https://www.nasa.gov/wp-content/uploads/2022/03/south_pole_schrodinger_resized.jpg`
+* `https://www.nasa.gov/wp-content/uploads/2023/03/545754main_pia08427-full_full.jpg`
+
+## `images-assets.nasa.gov` (2 URLs)
+* `https://images-assets.nasa.gov/image/KSC-04pd1628/KSC-04pd1628~large.jpg`
+* `https://images-assets.nasa.gov/image/6901250/6901250~large.jpg`
 
 ## `imagine.gsfc.nasa.gov` (1 URL)
 * `https://imagine.gsfc.nasa.gov/observatories/history/missions/images/venera/venera13_orbiter.gif`
@@ -47,12 +54,15 @@ All `imageUrl` values extracted from `missions.ts` and `planets.ts`, grouped by 
 * `https://upload.wikimedia.org/wikipedia/commons/7/79/Soviet_moonrover.JPG`
 * `https://upload.wikimedia.org/wikipedia/commons/f/fa/Uranuscolour.png`
 
+## `lroc.im-ldi.com` (4 URLs)
+* `https://lroc.im-ldi.com/news/uploads/LROCiotw/Lunokhod1.jpg`
+* `https://lroc.im-ldi.com/news/uploads/LROCiotw/lunokhod_1_big.png`
+* `https://lroc.im-ldi.com/news/uploads/LROCiotw/L1_d03_s07_p19g_edit.png`
+* `https://lroc.im-ldi.com/news/uploads/LROCiotw/M175502049R.LR1_thumb.png`
+
 ## `cdn.mos.cms.futurecdn.net` (2 URLs)
 * `https://cdn.mos.cms.futurecdn.net/LpSpinMrdCCWZ68CjU4yUF-640-80.jpg.webp`
 * `https://cdn.mos.cms.futurecdn.net/umnbQmaP9jRSEVdobJT7QM-1200-80.jpg.webp`
-
-## `lroc.im-ldi.com` (1 URL)
-* `https://lroc.im-ldi.com/news/uploads/LROCiotw/Lunokhod1.jpg`
 
 ## `spacecenter.org` (1 URL)
 * `https://spacecenter.org/wp-content/uploads/2019/09/Galileo-Infographic-1024x576.png`

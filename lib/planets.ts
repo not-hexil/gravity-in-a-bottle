@@ -156,16 +156,16 @@ export const PLANET_DOSSIERS: Record<PlanetSlug, PlanetDossierData> = {
         badge: 'LUNAR GEOLOGY',
         title: 'Basalt Maria & Ancient Highlands',
         body: 'Dark volcanic plains (maria) formed billions of years ago when asteroid impacts flooded basins with molten lava, contrasted against bright, heavily cratered anorthosite highlands.',
-        imageUrl: '/assets/planets/placeholder.png',
-        imageCaption: 'The Moon planetary archive placeholder',
+        imageUrl: 'https://www.nasa.gov/wp-content/uploads/2022/03/south_pole_schrodinger_resized.jpg',
+        imageCaption: 'The Moon geology',
       },
       {
         id: 'moon-2',
         badge: 'REGOLITH',
         title: 'Electrostatic Razor-Sharp Dust',
         body: 'Without wind or water erosion, billions of years of micrometeorite impacts pulverized lunar rock into fine, abrasive glass-like regolith that clings to spacesuits and rover wheels.',
-        imageUrl: '/assets/planets/placeholder.png',
-        imageCaption: 'The Moon regolith telemetry placeholder',
+        imageUrl: 'https://images-assets.nasa.gov/image/6901250/6901250~large.jpg',
+        imageCaption: 'The Moon regolith',
       },
     ],
     whatWeLeftBehind: [
@@ -343,7 +343,7 @@ export const PLANET_DOSSIERS: Record<PlanetSlug, PlanetDossierData> = {
         title: 'Billions of Water-Ice Fragments',
         body: 'Saturn’s iconic rings span hundreds of thousands of kilometers yet average only tens of meters thick, sculpted by shepherd moons.',
         imageUrl: 'https://science.nasa.gov/wp-content/uploads/2024/03/saturn-farewell-pia21345.jpg',
-        imageCaption: 'Saturn planetary archive placeholder',
+        imageCaption: 'Saturn planetary archive',
       },
       {
         id: 'sat-2',
@@ -351,7 +351,7 @@ export const PLANET_DOSSIERS: Record<PlanetSlug, PlanetDossierData> = {
         title: 'Liquid Methane Rivers & Lakes',
         body: 'Saturn’s largest moon, Titan, possesses a dense nitrogen atmosphere 1.5× thicker than Earth’s surface pressure, where liquid methane falls as rain and fills dark hydrocarbon seas.',
         imageUrl: 'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/07/titan_carousel2.jpg',
-        imageCaption: 'Saturn ring & moon telemetry placeholder',
+        imageCaption: 'Saturn ring & moon',
       },
     ],
     whatWeLeftBehind: [
@@ -398,7 +398,7 @@ export const PLANET_DOSSIERS: Record<PlanetSlug, PlanetDossierData> = {
         title: 'Deserts and Seas',
         body: 'Rippling sand dunes, like those in Earth\'s Arabian desert, can be seen in the dark equatorial regions of Titan. Scientists think the sand is not made of silicates as on Earth, but of solid water ice coated with hydrocarbons that fall from the atmosphere. ',
         imageUrl: 'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/internal_resources/3797/Full_view_of_Titan_with_sunlight_glinting_off_lakes.jpeg',
-        imageCaption: 'Titan planetary archive placeholder',
+        imageCaption: 'Titan planetary archive',
       },
     ],
     whatWeLeftBehind: [

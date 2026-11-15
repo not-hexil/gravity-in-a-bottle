@@ -41,16 +41,16 @@ export const MISSION_MODALS: Record<MissionSlug, MissionModalData> = {
     imageCaption: 'Lunokhod 1',
     stageImages: [
       {
-        imageUrl: '/demo.png',
-        imageCaption: 'Stage 01 • Deployment down the Luna 17 landing ramp into Mare Imbrium',
+        imageUrl: 'https://lroc.im-ldi.com/news/uploads/LROCiotw/lunokhod_1_big.png',
+        imageCaption: 'Artist’s conception of Luna 17 on the lunar surface, with the ramps deployed, before the Lunokhod descended to the surface. ',
       },
       {
-        imageUrl: '/demo.png',
-        imageCaption: 'Stage 02 • Subsurface sonar & soil penetrometer traverse across crater rims',
+        imageUrl: 'https://lroc.im-ldi.com/news/uploads/LROCiotw/L1_d03_s07_p19g_edit.png',
+        imageCaption: 'View of the Luna 17 lander from the Lunokhod rover',
       },
       {
-        imageUrl: '/demo.png',
-        imageCaption: 'Stage 03 • French laser retroreflector alignment & 10.54 km endurance run',
+        imageUrl: 'https://lroc.im-ldi.com/news/uploads/LROCiotw/M175502049R.LR1_thumb.png',
+        imageCaption: 'Lunokhod 1 rover in its final parking place',
       },
     ],
     paragraphs: [
@@ -201,16 +201,16 @@ export const MISSION_MODALS: Record<MissionSlug, MissionModalData> = {
     imageCaption: 'An artist\'s rendering of the MESSENGER spacecraft at Mercury.',
     stageImages: [
       {
-        imageUrl: '/demo.png',
-        imageCaption: 'Stage 01 • Ceramic-cloth sunshade shielding instruments from 430 °C solar glare',
+        imageUrl: 'https://science.nasa.gov/wp-content/uploads/2016/05/true-mercury-jpg.webp',
+        imageCaption: 'Subtle colors appear on Mercury\'s surface in this mosaic image created by filters within MESSENGER\'s wide-angle camera',
       },
       {
-        imageUrl: '/demo.png',
-        imageCaption: 'Stage 02 • Neutron spectrometer detection of water ice in shadowed polar craters',
+        imageUrl: 'https://www.nasa.gov/wp-content/uploads/2015/06/edu_solar_panel_large.jpg',
+        imageCaption: 'These two large solar panels gave the MESSENGER spacecraft its power.',
       },
       {
-        imageUrl: '/demo.png',
-        imageCaption: 'Stage 03 • Final helium-thruster deorbit impact near Shakespeare Crater (April 30, 2015)',
+        imageUrl: 'https://images-assets.nasa.gov/image/KSC-04pd1628/KSC-04pd1628~large.jpg',
+        imageCaption: 'The MESSENGER spacecraft atop a Boeing Delta II rocket lifts off on time at 2:15:56 a.m. EDT, from Launch Pad 17-B, Cape Canaveral Air Force Station. ',
       },
     ],
     paragraphs: [
