@@ -68,12 +68,12 @@ export default function PlanetDossierClient({ planet }: PlanetDossierClientProps
   const bookPages: BookPage[] = [
     ...planet.infoBlocks.map((b) => ({
       ...b,
-      chapter: '01 // PLANETARY ENVIRONMENT',
+      chapter: '01 || PLANETARY ENVIRONMENT',
       isArtifact: false,
     })),
     ...planet.whatWeLeftBehind.map((a) => ({
       ...a,
-      chapter: '02 // WHAT WE LEFT BEHIND',
+      chapter: '02 || WHAT WE LEFT BEHIND',
       isArtifact: true,
     })),
   ];

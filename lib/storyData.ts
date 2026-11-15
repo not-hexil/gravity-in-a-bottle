@@ -14,7 +14,7 @@ export const CREW: Record<number, CharacterConfig> = {
   3: { id: 3, name: 'Galib', role: 'Engineer', suitColor: '#c2410c', blipFreq: 165 },
   4: { id: 4, name: 'Ummid', role: 'Comms Officer', suitColor: '#7e22ce', blipFreq: 310 },
   5: { id: 5, name: 'Humayra', role: 'Medic & Gardener', suitColor: '#dc2626', blipFreq: 520 },
-  6: { id: 6, name: 'Jawad', role: 'Pilot', suitColor: '#eab308', blipFreq: 620 },
+  6: { id: 6, name: 'Zawad', role: 'Pilot', suitColor: '#eab308', blipFreq: 620 },
   0: { id: 0, name: 'SYSTEM', role: 'Ship AI', suitColor: '#38bdf8', blipFreq: 880 },
   [-1]: { id: -1, name: 'MISSION CONTROL', role: 'Earth', suitColor: '#22d3ee', blipFreq: 360 },
 };
