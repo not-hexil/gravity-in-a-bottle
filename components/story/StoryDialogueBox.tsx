@@ -122,7 +122,7 @@ const DialogueContent: React.FC<StoryDialogueBoxProps> = ({
                 color: '#ffffff',
               }}
             >
-              {line.speaker > 0 ? `C${line.speaker} • ${char.name}` : char.name}
+              {char.role ? `${char.name} | ${char.role}` : char.name}
             </span>
           </div>
 
