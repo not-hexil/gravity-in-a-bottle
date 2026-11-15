@@ -9,8 +9,8 @@ export interface CharacterConfig {
 }
 
 export const CREW: Record<number, CharacterConfig> = {
-  1: { id: 1, name: 'Ashfia', role: 'Commander', suitColor: '#1d4ed8', blipFreq: 220 },
-  2: { id: 2, name: 'Doyal', role: 'Science Officer', suitColor: '#15803d', blipFreq: 440 },
+  1: { id: 1, name: 'Ashfia', role: 'Captain', suitColor: '#1d4ed8', blipFreq: 220 },
+  2: { id: 2, name: 'Shadman', role: 'Science Officer', suitColor: '#15803d', blipFreq: 440 },
   3: { id: 3, name: 'Galib', role: 'Engineer', suitColor: '#c2410c', blipFreq: 165 },
   4: { id: 4, name: 'Ummid', role: 'Comms Officer', suitColor: '#7e22ce', blipFreq: 310 },
   5: { id: 5, name: 'Humayra', role: 'Medic & Gardener', suitColor: '#dc2626', blipFreq: 520 },

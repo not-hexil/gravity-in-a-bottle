@@ -53,7 +53,7 @@ export const Scene0LoreIntro: React.FC<{
         const nextChar = currentLine[charCount];
         setCharCount((c) => c + 1);
         if (nextChar !== ' ') retroAudio.playBlip(340);
-      }, 35);
+      }, 65);
       return () => clearTimeout(t);
     } else {
       const pause = setTimeout(() => {
@@ -63,7 +63,7 @@ export const Scene0LoreIntro: React.FC<{
         } else {
           setPhase('READY_TO_PLAY');
         }
-      }, 950);
+      }, 1300);
       return () => clearTimeout(pause);
     }
   }, [phase, charCount, lineIndex, currentLine]);
@@ -104,6 +104,53 @@ export const Scene0LoreIntro: React.FC<{
         imageRendering: 'pixelated',
       }}
     >
+      <style>{`
+        @keyframes retroFlicker {
+          0%, 100% { opacity: 0.97; }
+          48% { opacity: 1; }
+          50% { opacity: 0.91; }
+          52% { opacity: 0.99; }
+        }
+        @keyframes retroCursorBlink {
+          0%, 49% { opacity: 1; }
+          50%, 100% { opacity: 0; }
+        }
+        .retro-text-cyan {
+          text-shadow:
+            -1px 0 rgba(255, 0, 85, 0.45),
+            1px 0 rgba(0, 255, 255, 0.55),
+            0 0 10px rgba(56, 189, 248, 0.75);
+          animation: retroFlicker 4s infinite;
+        }
+        .retro-text-lore {
+          text-shadow:
+            -1.5px 0 rgba(239, 68, 68, 0.55),
+            1.5px 0 rgba(34, 211, 238, 0.65),
+            0 0 14px rgba(125, 211, 252, 0.65);
+          animation: retroFlicker 3.5s infinite;
+        }
+        .retro-text-amber {
+          text-shadow:
+            -1.5px 0 rgba(239, 68, 68, 0.55),
+            1.5px 0 rgba(56, 189, 248, 0.55),
+            0 0 16px rgba(251, 191, 36, 0.85);
+          animation: retroFlicker 3s infinite;
+        }
+        .retro-cursor {
+          animation: retroCursorBlink 0.75s steps(1) infinite;
+        }
+      `}</style>
+
+      {/* CRT Scanline & Vignette Overlay */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-20"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at center, transparent 58%, rgba(0, 0, 0, 0.72) 100%), repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.28) 0px, rgba(0, 0, 0, 0.28) 1px, transparent 1px, transparent 3px)',
+        }}
+      />
+
       {!assets?.loreBg && (
         <div className="absolute inset-0 pointer-events-none opacity-80">
           {Array.from({ length: 45 }).map((_, i) => (
@@ -125,7 +172,7 @@ export const Scene0LoreIntro: React.FC<{
       <div className="relative z-10 max-w-3xl w-full text-center space-y-8">
         {phase === 'TITLE' && (
           <div>
-            <p className="relative z-10 text-xs md:text-sm text-sky-400 tracking-[0.25em] uppercase">
+            <p className="relative z-10 text-xs md:text-sm text-sky-400 tracking-[0.25em] uppercase retro-text-cyan">
               NASA Space Apps Challenge 2026
             </p>
 
@@ -139,7 +186,7 @@ export const Scene0LoreIntro: React.FC<{
               />
             </div>
 
-            <p className="relative z-10 text-xs md:text-sm text-sky-400 tracking-[0.25em]">
+            <p className="relative z-10 text-xs md:text-sm text-sky-400 tracking-[0.25em] retro-text-cyan">
               presents
             </p>
 
@@ -153,10 +200,10 @@ export const Scene0LoreIntro: React.FC<{
               />
             </div>
 
-            <p className="relative z-10 mt-3 text-sm md:text-base text-slate-300">
+            <p className="relative z-10 mt-3 text-sm md:text-base text-slate-300 tracking-[0.2em] retro-text-cyan">
               ODYSSEY-6 | ARCHIVE TERMINAL
             </p>
-            <p className="relative z-10 pt-6 text-sm md:text-lg text-sky-300 animate-bounce tracking-widest">
+            <p className="relative z-10 pt-6 text-sm md:text-lg text-sky-300 animate-bounce tracking-widest retro-text-cyan">
               [ PRESS ENTER TO INITIATE ]
             </p>
           </div>
@@ -164,19 +211,21 @@ export const Scene0LoreIntro: React.FC<{
 
         {phase === 'PLAYING_LORE' && (
           <div className="space-y-6">
-            <p className="text-xl md:text-3xl leading-relaxed tracking-wide min-h-[5rem] text-slate-100">
+            <p className="text-xl md:text-3xl leading-relaxed tracking-wider min-h-[5rem] text-cyan-100 retro-text-lore">
               {currentLine.slice(0, charCount)}
-              <span className="inline-block w-2.5 h-6 ml-1 bg-sky-400 animate-pulse" />
+              <span className="inline-block ml-1 text-sky-400 retro-cursor">
+                █
+              </span>
             </p>
           </div>
         )}
 
         {phase === 'READY_TO_PLAY' && (
           <div className="space-y-8">
-            <p className="text-2xl md:text-4xl font-bold text-amber-300 tracking-wider">
+            <p className="text-2xl md:text-4xl font-bold text-amber-300 tracking-wider retro-text-amber">
               {S0_LORE_LINES[S0_LORE_LINES.length - 1]}
             </p>
-            <p className="text-sm md:text-lg text-emerald-400 animate-bounce pt-4 tracking-widest">
+            <p className="text-sm md:text-lg text-emerald-400 animate-bounce pt-4 tracking-widest retro-text-cyan">
               [ PRESS ENTER TO PLAY ]
             </p>
           </div>

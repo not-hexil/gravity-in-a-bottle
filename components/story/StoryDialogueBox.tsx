@@ -116,7 +116,7 @@ const DialogueContent: React.FC<StoryDialogueBoxProps> = ({
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span
-              className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm"
+              className="text-s font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm"
               style={{
                 backgroundColor: line.isCyanRadio ? '#0891b2' : char.suitColor,
                 color: '#ffffff',

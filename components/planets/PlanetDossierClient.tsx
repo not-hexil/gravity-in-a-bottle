@@ -448,7 +448,7 @@ export default function PlanetDossierClient({ planet }: PlanetDossierClientProps
         ) : planet.minigames.length > 0 ? (
           <section className="mb-10">
             <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-widest text-emerald-400">
-              {'03 // FIELD SIMULATIONS & MINIGAMES'}
+              {'03 || FIELD SIMULATIONS & MINIGAMES'}
             </h2>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
