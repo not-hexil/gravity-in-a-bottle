@@ -19,7 +19,6 @@ class RetroAudio {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'square';
-    // Slight pitch jitter for natural Undertale-style speech feel
     osc.frequency.setValueAtTime(freq + (Math.random() * 24 - 12), ctx.currentTime);
     gain.gain.setValueAtTime(0.04, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.045);

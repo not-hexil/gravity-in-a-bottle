@@ -18,7 +18,6 @@ export default function InstructionModal({
   onResumeOrStart,
   onRestart,
 }: InstructionModalProps) {
-  // Allow Enter to start/resume immediately while modal is open
   useEffect(() => {
     if (!isOpen) return;
     const handleKey = (e: KeyboardEvent) => {

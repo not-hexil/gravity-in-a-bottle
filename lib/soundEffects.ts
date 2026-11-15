@@ -1,5 +1,3 @@
-// Zero-dependency Web Audio API procedural sound synthesizer
-
 let sharedCtx: AudioContext | null = null;
 let noiseBuffer: AudioBuffer | null = null;
 
@@ -32,10 +30,7 @@ function getNoiseBuffer(ctx: AudioContext): AudioBuffer {
   return buffer;
 }
 
-// ---------------------------------------------------------------------------
-// 1. UNIVERSAL MECHANICAL KEYBOARD SWITCH CLICK
-// ---------------------------------------------------------------------------
-
+// Universal Mechanical Keyboard Clicks
 export function playMechKeyPress(isActionButton = false) {
   const ctx = getAudioContext();
   if (!ctx) return;
@@ -95,10 +90,7 @@ export function playMechKeyRelease() {
   osc.stop(now + 0.02);
 }
 
-// ---------------------------------------------------------------------------
-// 2. SOLAR SYSTEM & STAGE PROGRESSION SOUNDS
-// ---------------------------------------------------------------------------
-
+// Core Gameplay sounds
 export function playRandomSpaceBeep() {
   const ctx = getAudioContext();
   if (!ctx) return;
@@ -194,10 +186,7 @@ export function playMissionCompleteFanfare() {
   });
 }
 
-// ---------------------------------------------------------------------------
-// 3. HUYGENS LANDER (TITAN DESCENT) AUDIO
-// ---------------------------------------------------------------------------
-
+// Hyugen Audio
 export function playThrusterBurst() {
   const ctx = getAudioContext();
   if (!ctx) return;
@@ -305,10 +294,7 @@ export function playCrashExplosion() {
   noise.stop(now + 0.6);
 }
 
-// ---------------------------------------------------------------------------
-// 4. LUNOKHOD 1 (LUNAR ROVER) AUDIO
-// ---------------------------------------------------------------------------
-
+// Lunokhod audio
 export function playWaypointPing() {
   const ctx = getAudioContext();
   if (!ctx) return;
@@ -390,10 +376,7 @@ export function playProbeCollected(count: number) {
   });
 }
 
-// ---------------------------------------------------------------------------
-// 5. GALILEO PROBE (JUPITER PLUNGE) AUDIO
-// ---------------------------------------------------------------------------
-
+//Galileo probe audio
 export function playTelemetryDataTick(progressPercent: number) {
   const ctx = getAudioContext();
   if (!ctx) return;
@@ -454,10 +437,7 @@ export function playLightningZap() {
   osc.stop(now + 0.27);
 }
 
-// ---------------------------------------------------------------------------
-// 6. INGENUITY HELICOPTER (MARS FLIGHT) AUDIO
-// ---------------------------------------------------------------------------
-
+// Ingenuity helicoper audio
 export function playRotorPulse(highRpm = false) {
   const ctx = getAudioContext();
   if (!ctx) return;
@@ -521,3 +501,5 @@ export function playRockBump() {
   osc.start(now);
   osc.stop(now + 0.13);
 }
+
+// TBA remaining minigames

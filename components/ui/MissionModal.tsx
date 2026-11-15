@@ -58,7 +58,6 @@ export default function MissionModal({
           </button>
         </div>
 
-        {/* Spacecraft Archival Photo */}
         {data.imageUrl && (
           <figure className="mt-4 overflow-hidden rounded-lg border border-slate-700 bg-slate-950">
             <img

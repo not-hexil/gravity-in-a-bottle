@@ -23,7 +23,7 @@ const MugshotSlot: React.FC<{
 
   return (
     <div
-      className="w-20 h-20 shrink-0 border-2 border-sky-300 flex flex-col items-center justify-center text-center overflow-hidden"
+      className="absolute -top-10 -left-10 w-36 h-36 shrink-0 border-4 border-sky-400 flex flex-col items-center justify-center text-center overflow-hidden shadow-[0_0_25px_rgba(56,189,248,0.5)] z-30"
       style={{ backgroundColor: url && !imgFailed ? '#0f172a' : suitColor }}
     >
       {url && !imgFailed ? (
@@ -77,7 +77,6 @@ const DialogueContent: React.FC<StoryDialogueBoxProps> = ({
     return () => clearTimeout(timer);
   }, [charIndex, line.text, char.blipFreq]);
 
-  // Ensure advancing only after typing is complete
   const handleAdvance = useCallback(() => {
     if (isDoneTyping) {
       onNext();
@@ -98,51 +97,49 @@ const DialogueContent: React.FC<StoryDialogueBoxProps> = ({
   return (
     <div
       onClick={handleAdvance}
-      className={`w-full max-w-4xl mx-auto select-none border-4 border-sky-400 bg-slate-950/95 p-4 shadow-[0_0_25px_rgba(56,189,248,0.35)] font-mono text-white ${
+      className={`relative w-full max-w-4xl mx-auto mt-12 select-none border-4 border-sky-400 bg-slate-950/95 pt-4 pb-4 pl-32 pr-6 shadow-[0_0_25px_rgba(56,189,248,0.35)] font-mono text-white ${
         isDoneTyping ? 'cursor-pointer' : 'cursor-default'
       }`}
       style={{ imageRendering: 'pixelated' }}
     >
-      <div className="flex items-start gap-4">
-        {hasPortrait && (
-          <MugshotSlot
-            key={line.speaker}
-            speaker={line.speaker}
-            name={char.name}
-            suitColor={char.suitColor}
-            url={portraitUrl}
-          />
-        )}
+      {hasPortrait && (
+        <MugshotSlot
+          key={line.speaker}
+          speaker={line.speaker}
+          name={char.name}
+          suitColor={char.suitColor}
+          url={portraitUrl}
+        />
+      )}
 
-        <div className="flex-1 min-h-[5rem] flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span
-                className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm"
-                style={{
-                  backgroundColor: line.isCyanRadio ? '#0891b2' : char.suitColor,
-                  color: '#ffffff',
-                }}
-              >
-                {line.speaker > 0 ? `C${line.speaker} • ${char.name}` : char.name}
-              </span>
-            </div>
-
-            <p
-              className={`text-base md:text-lg leading-relaxed ${
-                line.isCyanRadio ? 'text-cyan-300 font-semibold tracking-wide' : 'text-slate-100'
-              }`}
+      <div className="min-h-[5rem] flex flex-col justify-between">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm"
+              style={{
+                backgroundColor: line.isCyanRadio ? '#0891b2' : char.suitColor,
+                color: '#ffffff',
+              }}
             >
-              {displayedText}
-              {!isDoneTyping && (
-                <span className="inline-block w-2 h-4 ml-1 bg-sky-400 animate-pulse" />
-              )}
-            </p>
+              {line.speaker > 0 ? `C${line.speaker} • ${char.name}` : char.name}
+            </span>
           </div>
 
-          <div className="text-right text-xs text-sky-400 mt-2 h-4">
-            {isDoneTyping ? '▼ CLICK OR PRESS ENTER' : ''}
-          </div>
+          <p
+            className={`text-base md:text-lg leading-relaxed ${
+              line.isCyanRadio ? 'text-cyan-300 font-semibold tracking-wide' : 'text-slate-100'
+            }`}
+          >
+            {displayedText}
+            {!isDoneTyping && (
+              <span className="inline-block w-2 h-4 ml-1 bg-sky-400 animate-pulse" />
+            )}
+          </p>
+        </div>
+
+        <div className="text-right text-xs text-sky-400 mt-2 h-4">
+          {isDoneTyping ? '▼ CLICK OR PRESS ENTER' : ''}
         </div>
       </div>
     </div>

@@ -100,7 +100,6 @@ export default function MobileDPad({ actionLabel, disabled = false }: MobileDPad
         <div />
       </div>
 
-      {/* Context-Aware Action Button (Spacebar) */}
       <div className="flex flex-col items-center gap-1.5">
         <button
           type="button"

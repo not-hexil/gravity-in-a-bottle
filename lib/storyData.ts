@@ -5,7 +5,7 @@ export interface CharacterConfig {
   name: string;
   role: string;
   suitColor: string;
-  blipFreq: number; // Hz for Web Audio synth
+  blipFreq: number;
 }
 
 export const CREW: Record<number, CharacterConfig> = {
@@ -28,7 +28,7 @@ export interface DialogueLine {
   isCyanRadio?: boolean;
 }
 
-// S0: LORE INTRO[cite: 2, 3]
+// S0
 export const S0_LORE_LINES = [
   'Six astronauts. One small ship. Millions of kilometres from home.',
   'Then the signal died.',
@@ -38,7 +38,7 @@ export const S0_LORE_LINES = [
   'Left behind. Never forgotten.',
 ];
 
-// S1: CREW DECK[cite: 3, 4]
+// S1
 export const S1_DIALOGUE: DialogueLine[] = [
   { id: 'D1', speaker: 4, mood: 'worried', text: 'Still nothing. Every channel is just static.', sfx: 'static' },
   { id: 'D2', speaker: 3, mood: 'neutral', text: "Main antenna's cooked. I can't fix it from inside the ship." },
@@ -56,7 +56,7 @@ export const S1_DIALOGUE: DialogueLine[] = [
   { id: 'D14', speaker: 0, mood: 'none', text: 'ARCHIVE ONLINE. SELECT A MISSION.' },
 ];
 
-// S4: ENDING[cite: 5, 6]
+// S4
 export const S4_DIALOGUE: DialogueLine[] = [
   { id: 'E1', speaker: 6, mood: 'sad', text: 'Every one of them went quiet. But somebody still wrote their story down.' },
   { id: 'E2', speaker: 4, mood: 'determined', text: "We're not lost. We're just quiet." },
@@ -70,13 +70,13 @@ export const S4_DIALOGUE: DialogueLine[] = [
   { id: 'E10', speaker: 1, mood: 'calm', text: 'Abandoned... but not forgotten.' },
 ];
 
-// S5: CREDITS
+// S5
 export const S5_CREDITS_BLOCKS = [
-  { heading: 'ABANDONED BUT NOT FORGOTTEN', body: 'A game by Team Gravity in Space\nNASA Space Apps Challenge 2026' },
-  { heading: 'STORY AND RESEARCH', body: '[Team Member Names]' },
-  { heading: 'DESIGN AND DEVELOPMENT', body: '[Team Member Names]' },
+  { heading: 'GRAVITY IN A BOTTLE', body: 'A game by Team Gravity in Space\nNASA Space Apps Challenge 2026' },
+  { heading: 'STORY AND RESEARCH', body: 'NAMES PEOPLE NAMES, WRITE YOURS' },
+  { heading: 'DESIGN AND DEVELOPMENT', body: 'NAMES PEOPLE NAMES, WRITE YOURS' },
   { heading: 'PIXEL ART', body: 'Made with generative AI from team photos and edited by the team' },
-  { heading: 'MUSIC AND SOUND', body: 'Synthesized Chiptune Web Audio Engine' },
+  { heading: 'MUSIC AND SOUND', body: 'Chiptune Web Audio Engine' },
   { heading: 'DATA SOURCES', body: 'NASA Science • NASA/JPL • NASA PDS • NASA NSSDCA • ESA' },
-  { heading: 'THANK YOU TO THE MACHINES', body: 'Lunokhod 1 • Ingenuity • Galileo Probe • Galileo Orbiter • Pioneer 10 • Huygens' },
+  { heading: 'THANK YOU TO THE MACHINES', body: 'All the machines left behind, but not forgotten!' },
 ];

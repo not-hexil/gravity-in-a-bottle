@@ -19,6 +19,16 @@ export interface AssetOverrides {
   getPortraitUrl?: (speaker: number) => string | null;
 }
 
+const CREW_POSITIONS: Record<number, { x: number; y: number }> = {
+  1: { x: 850, y: 580 },
+  2: { x: 1100, y: 370 },
+  3: { x: 1150, y: 220 },
+  4: { x: 1250, y: 250 },
+  5: { x: 460, y: 260 },
+  6: { x: 900, y: 230 },
+};
+
+// Scene 0
 type S0Phase = 'TITLE' | 'PLAYING_LORE' | 'READY_TO_PLAY';
 
 export const Scene0LoreIntro: React.FC<{
@@ -150,6 +160,7 @@ export const Scene0LoreIntro: React.FC<{
   );
 };
 
+// Scene 01
 export const Scene1CrewDeck: React.FC<{
   onComplete: () => void;
   assets?: AssetOverrides;
@@ -170,7 +181,7 @@ export const Scene1CrewDeck: React.FC<{
 
   return (
     <div
-      className={`relative w-full h-screen bg-slate-900 text-white font-mono flex flex-col justify-between p-4 md:p-8 transition-opacity duration-700 ${
+      className={`relative w-full h-screen bg-slate-900 text-white font-mono flex flex-col justify-between p-4 md:p-8 overflow-hidden transition-opacity duration-700 ${
         fadingOut ? 'opacity-0' : 'opacity-100'
       }`}
       style={{
@@ -180,7 +191,7 @@ export const Scene1CrewDeck: React.FC<{
         imageRendering: 'pixelated',
       }}
     >
-      <div className="z-10 flex justify-between items-center bg-slate-950/90 border-2 border-amber-500/70 px-4 py-2 text-xs md:text-sm">
+      <div className="z-30 flex justify-between items-center bg-slate-950/90 border-2 border-amber-500/70 px-4 py-2 text-xs md:text-sm">
         <span className="text-amber-400 font-bold tracking-wider">
           ODYSSEY-6 | CREW DECK
         </span>
@@ -189,46 +200,48 @@ export const Scene1CrewDeck: React.FC<{
         </span>
       </div>
 
-      <div className="relative z-10 flex-1 flex items-center justify-center">
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-6 md:gap-10 items-center bg-slate-950/60 p-6 rounded border border-slate-700/80">
-          {[1, 2, 3, 4, 5, 6].map((id) => {
-            const member = CREW[id];
-            const isSpeaking = currentLine.speaker === id;
-            const spriteUrl = assets?.getSpriteUrl ? assets.getSpriteUrl(id) : null;
+      {[1, 2, 3, 4, 5, 6].map((id) => {
+        const member = CREW[id];
+        const isSpeaking = currentLine.speaker === id;
+        const spriteUrl = assets?.getSpriteUrl ? assets.getSpriteUrl(id) : null;
+        const pos = CREW_POSITIONS[id] || { x: 0, y: 0 };
 
-            return (
+        return (
+          <div
+            key={id}
+            className={`absolute flex flex-col items-center transition-transform duration-200 ${
+              isSpeaking ? 'opacity-100 z-20' : 'opacity-85 z-10'
+            }`}
+            style={{
+              left: `${pos.x}px`,
+              top: `${pos.y}px`,
+              transform: isSpeaking ? 'scale(1.15)' : 'scale(1)',
+            }}
+          >
+            {spriteUrl ? (
+              <img
+                src={spriteUrl}
+                alt={member.name}
+                className="w-32 h-32 object-contain"
+              />
+            ) : (
               <div
-                key={id}
-                className={`flex flex-col items-center transition-transform duration-200 ${
-                  isSpeaking ? '-translate-y-2 scale-110' : 'opacity-80'
-                }`}
+                className={`w-24 h-24 border-2 ${
+                  isSpeaking ? 'border-white shadow-[0_0_12px_#fff]' : 'border-slate-950'
+                } flex items-center justify-center text-sm font-bold`}
+                style={{ backgroundColor: member.suitColor }}
               >
-                {spriteUrl ? (
-                  <img
-                    src={spriteUrl}
-                    alt={member.name}
-                    className="w-16 h-16 object-contain"
-                  />
-                ) : (
-                  <div
-                    className={`w-12 h-12 border-2 ${
-                      isSpeaking ? 'border-white shadow-[0_0_12px_#fff]' : 'border-slate-950'
-                    } flex items-center justify-center text-xs font-bold`}
-                    style={{ backgroundColor: member.suitColor }}
-                  >
-                    C{id}
-                  </div>
-                )}
-                <span className="mt-2 text-[11px] bg-black/75 px-1.5 py-0.5 rounded">
-                  {member.name}
-                </span>
+                C{id}
               </div>
-            );
-          })}
-        </div>
-      </div>
+            )}
+            <span className="mt-2 text-xs bg-black/75 px-2 py-0.5 rounded text-white">
+              {member.name}
+            </span>
+          </div>
+        );
+      })}
 
-      <div className="z-10">
+      <div className="z-30 mt-auto">
         <StoryDialogueBox
           line={currentLine}
           onNext={handleNext}
@@ -239,6 +252,7 @@ export const Scene1CrewDeck: React.FC<{
   );
 };
 
+// Final Impact Overslay
 const FinalImpactOverlay: React.FC<{
   onViewCredits: () => void;
   onGoHome: () => void;
@@ -320,6 +334,7 @@ const FinalImpactOverlay: React.FC<{
   );
 };
 
+// Scene 04
 export const Scene4Ending: React.FC<{
   onComplete: () => void;
   onGoHome?: () => void;
@@ -341,7 +356,7 @@ export const Scene4Ending: React.FC<{
 
   return (
     <div
-      className="relative w-full h-screen bg-slate-900 text-white font-mono flex flex-col justify-between p-4 md:p-8"
+      className="relative w-full h-screen bg-slate-900 text-white font-mono flex flex-col justify-between p-4 md:p-8 overflow-hidden"
       style={{
         backgroundImage:
           showSignalShip && assets?.endingBg
@@ -356,7 +371,7 @@ export const Scene4Ending: React.FC<{
     >
       <div className="absolute inset-0 bg-amber-500/10 pointer-events-none" />
 
-      <div className="z-10 flex justify-between items-center bg-slate-950/90 border-2 border-emerald-400/70 px-4 py-2 text-xs md:text-sm">
+      <div className="z-30 flex justify-between items-center bg-slate-950/90 border-2 border-emerald-400/70 px-4 py-2 text-xs md:text-sm">
         <span className="text-amber-300 font-bold tracking-wider">
           ODYSSEY-6 | CREW DECK
         </span>
@@ -365,8 +380,48 @@ export const Scene4Ending: React.FC<{
         </span>
       </div>
 
-      <div className="relative z-10 flex-1 flex items-center justify-center">
-        {showSignalShip && !assets?.endingBg ? (
+      {!showSignalShip &&
+        [1, 2, 3, 4, 5, 6].map((id) => {
+          const member = CREW[id];
+          const isSpeaking = currentLine.speaker === id;
+          const spriteUrl = assets?.getSpriteUrl ? assets.getSpriteUrl(id) : null;
+          const pos = CREW_POSITIONS[id] || { x: 0, y: 0 };
+
+          return (
+            <div
+              key={id}
+              className={`absolute flex flex-col items-center transition-transform duration-200 ${
+                isSpeaking ? 'opacity-100 z-20' : 'opacity-85 z-10'
+              }`}
+              style={{
+                left: `${pos.x}px`,
+                top: `${pos.y}px`,
+                transform: isSpeaking ? 'scale(1.15)' : 'scale(1)',
+              }}
+            >
+              {spriteUrl ? (
+                <img
+                  src={spriteUrl}
+                  alt={member.name}
+                  className="w-32 h-32 object-contain"
+                />
+              ) : (
+                <div
+                  className="w-24 h-24 border-2 border-amber-200 flex items-center justify-center text-sm font-bold"
+                  style={{ backgroundColor: member.suitColor }}
+                >
+                  C{id}
+                </div>
+              )}
+              <span className="mt-2 text-xs bg-black/75 px-2 py-0.5 rounded text-white">
+                {member.name}
+              </span>
+            </div>
+          );
+        })}
+
+      {showSignalShip && !assets?.endingBg && (
+        <div className="relative z-10 flex-1 flex items-center justify-center">
           <div className="text-center space-y-3 bg-slate-950/80 border-2 border-cyan-400 p-6 rounded">
             <div className="text-cyan-300 text-sm tracking-widest animate-ping">
               (( ( • ) ))
@@ -375,46 +430,11 @@ export const Scene4Ending: React.FC<{
               [ODYSSEY-6 DISH TRANSMITTING TOWARD EARTH]
             </p>
           </div>
-        ) : !showSignalShip ? (
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-6 items-center bg-slate-950/60 p-6 rounded border border-amber-500/40">
-            {[1, 2, 3, 4, 5, 6].map((id) => {
-              const member = CREW[id];
-              const isSpeaking = currentLine.speaker === id;
-              const spriteUrl = assets?.getSpriteUrl ? assets.getSpriteUrl(id) : null;
-
-              return (
-                <div
-                  key={id}
-                  className={`flex flex-col items-center transition-transform duration-200 ${
-                    isSpeaking ? '-translate-y-2 scale-110' : 'opacity-85'
-                  }`}
-                >
-                  {spriteUrl ? (
-                    <img
-                      src={spriteUrl}
-                      alt={member.name}
-                      className="w-16 h-16 object-contain"
-                    />
-                  ) : (
-                    <div
-                      className="w-12 h-12 border-2 border-amber-200 flex items-center justify-center text-xs font-bold"
-                      style={{ backgroundColor: member.suitColor }}
-                    >
-                      C{id}
-                    </div>
-                  )}
-                  <span className="mt-2 text-[11px] bg-black/75 px-1.5 py-0.5 rounded">
-                    {member.name}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
-      </div>
+        </div>
+      )}
 
       {!showImpactFinale && (
-        <div className="z-10">
+        <div className="z-30 mt-auto">
           <StoryDialogueBox
             line={currentLine}
             onNext={handleNext}
@@ -433,6 +453,7 @@ export const Scene4Ending: React.FC<{
   );
 };
 
+// Scene 05
 export const Scene5Credits: React.FC<{
   onRestart?: () => void;
   onGoHome?: () => void;
